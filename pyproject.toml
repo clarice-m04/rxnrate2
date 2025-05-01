@@ -12,7 +12,7 @@ dependencies = [
     # "rdkit",
 ]
 authors = [
-    {name = "Clarice", email = "later"}
+    {name = "Clarice", email = "mihalacheclarice@gmail.com"}
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",
