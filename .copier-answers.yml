@@ -1,0 +1,9 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: 08e8b92
+_src_path: gh:schwallergroup/copier-liac-minimal
+author_email: later
+author_name: Clarice
+github_org: clarice-m04
+package_name: rxnrate2
+project_name: rxnrate2
+short_description: Calculates and graphs the way concentrations advance in a reaction
