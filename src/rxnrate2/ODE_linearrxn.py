@@ -7,7 +7,7 @@ def build_M_matrix(species, reactions):
     """Constructs matrix M from the rxn definitions
     species: list like ['A', 'B', 'C']
     reactions: tuple like [('A', 'B', 1.0, None) or ('B', 'C', 0.5, 0.3)]
-                first of tuple is the reagent, second is product, 3rd is k forward, last is a k reverse or none"""
+                first of tuple is the reagent/from species, second is product/to species, 3rd is k forward, last is a k reverse or none"""
     n = len(species)
     species_idx = {s: i for i, s in enumerate(species)}
     M = np.zeros((n, n))
@@ -58,13 +58,14 @@ def plot_solution(sol, species):
 #    return yt, t
 
 # === Example Usage ===
-species_test = ['A', 'B', 'C']
+species_test = ['A', 'B', 'C', 'D']
 reactions_test = [
     ('A', 'B', 1.0, None),
     ('B', 'C', 0.5, 0.3),
-    ('C', 'A', 0.2, None)
+    ('C', 'A', 0.2, None),
+    ('C', 'D', 2.0, 0.4)
 ]
-y0_vals = [1.0, 0.0, 0.0]
+y0_vals = [1.0, 0.0, 0.0, 0.0]  # Initial concentrations for A, B, C, D
 
 sol, M = solve_reaction(species_test, reactions_test, y0_vals)
 
@@ -76,3 +77,5 @@ sol, M = solve_reaction(species_test, reactions_test, y0_vals)
 #    print(f"{s}(t) = {yt[i]}")
 
 plot_solution(sol, species_test)
+
+#NB: je pourrais rajouter l'evaluation de la concentration a un temps t donné et qu'il soit marqué sur le graphe
