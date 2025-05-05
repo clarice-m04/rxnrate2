@@ -55,7 +55,6 @@ dependencies:
       - referencing==0.36.2
       - requests==2.32.3
       - rpds-py==0.24.0
-      - rxnrate2==0.0.1
       - scipy==1.15.2
       - six==1.17.0
       - smmap==5.0.2
