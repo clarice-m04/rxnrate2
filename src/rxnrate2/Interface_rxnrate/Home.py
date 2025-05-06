@@ -1,5 +1,6 @@
 import streamlit as st
 import base64
+from pathlib import Path
 
 
 from rxnrate2.Interface_rxnrate.pages import simulation
@@ -17,14 +18,17 @@ st.markdown("""
     }
     .stText, .stMarkdown, .stDataFrame, .stTable, .stButton, .stHeader, .stSubheader, .stCaption {
         font-family: 'Times New Roman', Times, serif !important;
-    }
+    }s
     </style>
 """, unsafe_allow_html=True)
 
 # backround of the application
 
 def set_background(jpg_file):
-    with open(jpg_file, "rb") as image_file:
+    current_dir = Path(__file__).parent
+    image_path = current_dir / jpg_file
+
+    with image_path.open("rb") as image_file:
         encoded = base64.b64encode(image_file.read()).decode()
 
     st.markdown(
