@@ -3,9 +3,7 @@ import base64
 from pathlib import Path
 
 
-from rxnrate2.Interface_rxnrate.pages import simulation
-#from rxnrate2.Interface_rxnrate.pages import SimpleRxn
-
+from rxnrate2.Interface_rxnrate.pages import SimpleRxn, simulation
 
 # Times new roman font
 st.markdown("""
@@ -72,7 +70,7 @@ with col1:
     st.write("**Main characteristics:**")
     st.write("- Reaction of type A -> B -> C")
     st.write("- One reactant gives one product")
-    st.page_link("pages/simulation.py", label="Simple reaction", icon="1️⃣")
+    st.page_link("pages/SimpleRxn.py", label="Simple reaction", icon="1️⃣")
 
 with col2:
     st.write("**Main characteristics:**")
