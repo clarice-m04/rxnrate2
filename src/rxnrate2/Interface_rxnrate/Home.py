@@ -72,13 +72,13 @@ with col1:
     st.write("**Main characteristics:**")
     st.write("- Reaction of type A -> B -> C")
     st.write("- One reactant gives one product")
-    st.page_link("pages\simulation.py", label="Simple reaction", icon="1️⃣")
+    st.page_link("pages/simulation.py", label="Simple reaction", icon="1️⃣")
 
 with col2:
     st.write("**Main characteristics:**")
     st.write("- Reaction of type A + B -> C")
     st.write("- Two or more reactants give one product")
-    st.page_link("pages\simulation.py", label="More complex reaction", icon="2️⃣")
+    st.page_link("pages/simulation.py", label="More complex reaction", icon="2️⃣")
     
 # col1, col2 = st.columns(2)
 #with col1:
