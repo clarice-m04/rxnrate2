@@ -3,7 +3,7 @@ import base64
 from pathlib import Path
 
 
-from rxnrate2.Interface_rxnrate.pages import SimpleRxn, ComplexRxn
+#from rxnrate2.Interface_rxnrate.pages import SimpleRxn, ComplexRxn
 
 # Times new roman font
 st.markdown("""
