@@ -2,8 +2,7 @@ import streamlit as st
 import base64
 
 
-from rxnrate2.Interface_rxnrate.pages import simulation
-#from rxnrate2.Interface_rxnrate.pages import SimpleRxn
+from rxnrate2.Interface_rxnrate.pages import singlerxn, complexrxn
 
 
 # Times new roman font
@@ -68,26 +67,11 @@ with col1:
     st.write("**Main characteristics:**")
     st.write("- Reaction of type A -> B -> C")
     st.write("- One reactant gives one product")
-    st.page_link("pages\simulation.py", label="Simple reaction", icon="1️⃣")
+    st.page_link("pages/singlerxn.py", label="Simple reaction", icon="1️⃣")
 
 with col2:
     st.write("**Main characteristics:**")
     st.write("- Reaction of type A + B -> C")
     st.write("- Two or more reactants give one product")
-    st.page_link("pages\simulation.py", label="More complex reaction", icon="2️⃣")
+    st.page_link("pages/complexrxn.py", label="More complex reaction", icon="2️⃣")
     
-# col1, col2 = st.columns(2)
-#with col1:
-     #if st.button("Single reaction"):
-     #   st.session_state.page = "ODE_singlerxn_int"
-   
-#with col2:
-    #if st.button("Composit reaction"):
-        #st.session_state.page = "ODE_linearrxn_int"
-
-# Navigation
-
-#if st.session_state.page == "ODE_singlerxn_int":
-    #ODE_singlerxn_int.single_rxn()  
-#elif st.session_state.page == "ODE_linearrxn_int":
-    #ODE_linearrxn_int.linear_rxn()
