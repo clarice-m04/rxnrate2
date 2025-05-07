@@ -42,9 +42,9 @@ def plot_solution(sol, species):
     """plots each speacies' concentration"""
     for i, s in enumerate(species):
         plt.plot(sol.t, sol.y[i], label=s)
-    plt.xlabel('Time')
-    plt.ylabel('Concentration')
-    plt.title('Concentration over time of each species')
+    plt.xlabel('Time', fontname='Times New Roman', fontsize=14)
+    plt.ylabel('Concentration', fontname='Times New Roman', fontsize=14)
+    plt.title('Concentration over time of each species', fontname='Times New Roman', fontsize=14)
     plt.legend()
     #plt.grid(True)
     plt.show()
