@@ -37,6 +37,9 @@ if 'reagents' not in st.session_state:
     st.session_state.init_conc = {}
     st.session_state.reactions = []
 
+if "fixed_reagent" not in st.session_state:
+    st.session_state.fixed_reagent = None
+
 # Helper: fallback SMILES
 def get_smiles(query):
     fallback_smiles = {
@@ -106,7 +109,13 @@ def draw_reaction(reagent_smiles, product_smiles, reagent_label, product_label, 
 # Form input
 col1, col2 = st.columns(2)
 with col1:
-    reagent = st.text_input("Reagent (Formula or Name, e.g. H2O)")
+    # If previous reactions exist, use the last product as the default reagent
+    if st.session_state.fixed_reagent:
+        reagent = st.session_state.fixed_reagent
+        st.markdown(f"**Reagent:** {reagent} *(auto-filled from previous product)*")
+    else:
+        reagent = st.text_input("Reagent (Formula or Name, e.g. H2O)")
+
     k_forward = st.number_input("k_forward", min_value=0.0, value=1.0, format="%.6f")
     init_conc_reagent = st.number_input("Initial concentration of Reagent", min_value=0.0, value=1.0, format="%.3f")
 with col2:
@@ -138,13 +147,21 @@ if st.button("Add Reaction"):
                 'kb': k_backward
             })
 
-        # ✅ Append tuple with kb=None if it's 0    
+            # ✅ Append tuple with kb=None if it's 0    
             if "reaction_tuples" not in st.session_state:
                 st.session_state.reaction_tuples = []
 
             kb_value = k_backward if k_backward != 0 else None
             reaction_tuple = (reagent, product, k_forward, kb_value)
             st.session_state.reaction_tuples.append(reaction_tuple)
+
+            # After adding the reaction
+            if not st.session_state.fixed_reagent:
+            # Set reagent to the first manually entered one
+                st.session_state.fixed_reagent = product
+            else:
+            # Update reagent to next product to continue chain
+                st.session_state.fixed_reagent = product
 
             st.success(f"Added reaction: {reagent} ⇌ {product}")
         else:
