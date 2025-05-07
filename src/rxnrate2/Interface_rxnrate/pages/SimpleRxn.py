@@ -40,6 +40,9 @@ if 'reagents' not in st.session_state:
 if "fixed_reagent" not in st.session_state:
     st.session_state.fixed_reagent = None
 
+if "species_list" not in st.session_state:
+    st.session_state.species_list = []
+
 # Helper: fallback SMILES
 def get_smiles(query):
     fallback_smiles = {
@@ -163,6 +166,14 @@ if st.button("Add Reaction"):
             # Update reagent to next product to continue chain
                 st.session_state.fixed_reagent = product
 
+            # Append reagent if not already present
+            if reagent not in st.session_state.species_list:
+                st.session_state.species_list.append(reagent)
+
+            # Append product if not already present
+            if product not in st.session_state.species_list:
+                st.session_state.species_list.append(product)
+
             st.success(f"Added reaction: {reagent} ⇌ {product}")
         else:
             st.error("Could not resolve SMILES for reagent or product.")
@@ -213,3 +224,6 @@ for idx, rxn in enumerate(st.session_state.reactions):
 st.subheader("Stored Reaction Tuples")
 for r in st.session_state.reaction_tuples:
     st.write(r)
+
+st.markdown("### All Species (Ordered, No Duplicates):")
+st.write(st.session_state.species_list)
