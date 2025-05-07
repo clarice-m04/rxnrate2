@@ -138,6 +138,14 @@ if st.button("Add Reaction"):
                 'kb': k_backward
             })
 
+        # ✅ Append tuple with kb=None if it's 0    
+            if "reaction_tuples" not in st.session_state:
+                st.session_state.reaction_tuples = []
+
+            kb_value = k_backward if k_backward != 0 else None
+            reaction_tuple = (reagent, product, k_forward, kb_value)
+            st.session_state.reaction_tuples.append(reaction_tuple)
+
             st.success(f"Added reaction: {reagent} ⇌ {product}")
         else:
             st.error("Could not resolve SMILES for reagent or product.")
@@ -184,3 +192,7 @@ for idx, rxn in enumerate(st.session_state.reactions):
         st.session_state.k_backward.pop(idx)
         # You might also remove from concentrations if no longer used
         break  # prevent index errors after state change
+
+st.subheader("Stored Reaction Tuples")
+for r in st.session_state.reaction_tuples:
+    st.write(r)
