@@ -1,10 +1,9 @@
 import streamlit as st
 import base64
+from pathlib import Path
 
 
-from rxnrate2.Interface_rxnrate.pages import simulation
-#from rxnrate2.Interface_rxnrate.pages import SimpleRxn
-
+#from rxnrate2.Interface_rxnrate.pages import SimpleRxn, ComplexRxn
 
 # Times new roman font
 st.markdown("""
@@ -17,14 +16,17 @@ st.markdown("""
     }
     .stText, .stMarkdown, .stDataFrame, .stTable, .stButton, .stHeader, .stSubheader, .stCaption {
         font-family: 'Times New Roman', Times, serif !important;
-    }
+    }s
     </style>
 """, unsafe_allow_html=True)
 
 # backround of the application
 
 def set_background(jpg_file):
-    with open(jpg_file, "rb") as image_file:
+    current_dir = Path(__file__).parent
+    image_path = current_dir / jpg_file
+
+    with image_path.open("rb") as image_file:
         encoded = base64.b64encode(image_file.read()).decode()
 
     st.markdown(
@@ -65,16 +67,16 @@ st.divider()
 
 col1, col2 = st.columns(2)
 with col1:
-    st.write("**Main characteristics:**")
+    st.subheader("**Main characteristics:**")
     st.write("- Reaction of type A -> B -> C")
     st.write("- One reactant gives one product")
-    st.page_link("pages\simulation.py", label="Simple reaction", icon="1️⃣")
+    st.page_link("pages/SimpleRxn.py", label="Simple reaction", icon="1️⃣")
 
 with col2:
-    st.write("**Main characteristics:**")
+    st.subheader("**Main characteristics:**")
     st.write("- Reaction of type A + B -> C")
     st.write("- Two or more reactants give one product")
-    st.page_link("pages\simulation.py", label="More complex reaction", icon="2️⃣")
+    st.page_link("pages/ComplexRxn.py", label="More complex reaction", icon="2️⃣")
     
 # col1, col2 = st.columns(2)
 #with col1:

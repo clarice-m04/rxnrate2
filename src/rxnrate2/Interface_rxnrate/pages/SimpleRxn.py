@@ -1,5 +1,6 @@
 import streamlit as st
 
+
 # Times new roman font
 st.markdown("""
     <style>
@@ -15,5 +16,171 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-def linear_rxn():
-    st.title("Welcome in linear reaction part")
+#def linear_rxn():
+st.title("Welcome in linear reaction part")
+
+###Inputs from the user###
+import streamlit as st
+from rdkit import Chem
+from rdkit.Chem import Draw
+from PIL import Image, ImageDraw, ImageFont
+import pubchempy as pcp
+
+st.title("Chemical Reaction Collector")
+
+# Data structures
+if 'reagents' not in st.session_state:
+    st.session_state.reagents = []
+    st.session_state.products = []
+    st.session_state.kf = []
+    st.session_state.kb = []
+    st.session_state.init_conc = {}
+    st.session_state.reactions = []
+
+# Helper: fallback SMILES
+def get_smiles(query):
+    fallback_smiles = {
+        'H2O': 'O',
+        'CO2': 'O=C=O',
+        'O2': 'O=O',
+        'H2': '[H][H]',
+        'N2': 'N#N',
+        'CH4': 'C',
+        'NH3': 'N',
+    }
+    try:
+        compound = pcp.get_compounds(query, 'name')
+        if compound:
+            return compound[0].isomeric_smiles
+    except:
+        pass
+    return fallback_smiles.get(query.strip(), None)
+
+# Helper: drawing function
+def draw_reaction(reagent_smiles, product_smiles, reagent_label, product_label, conc_reagent, conc_product, kf, kb):
+    # Try to use Times New Roman; fallback to default
+    try:
+        font = ImageFont.truetype("Times New Roman.ttf", 14)
+    except:
+        font = ImageFont.load_default()
+
+
+    mol1 = Chem.MolFromSmiles(reagent_smiles) if reagent_smiles else None
+    mol2 = Chem.MolFromSmiles(product_smiles) if product_smiles else None
+
+    if not mol1 or not mol2:
+        st.warning("Could not generate one or both molecule images.")
+        return None
+
+    img1 = Draw.MolToImage(mol1, size=(200, 200))
+    img2 = Draw.MolToImage(mol2, size=(200, 200))
+
+    canvas = Image.new('RGB', (500, 250), 'white')
+    draw = ImageDraw.Draw(canvas)
+
+    # Paste molecule images
+    canvas.paste(img1, (10, 10))
+    canvas.paste(img2, (290, 10))
+
+    # Draw double arrows
+    arrow_y = 100
+    draw.line((220, arrow_y - 10, 280, arrow_y - 10), fill='black', width=2)
+    draw.line((280, arrow_y + 10, 220, arrow_y + 10), fill='black', width=2)
+    draw.polygon([(275, arrow_y - 13), (285, arrow_y - 10), (275, arrow_y - 7)], fill='black')
+    draw.polygon([(225, arrow_y + 7), (215, arrow_y + 10), (225, arrow_y + 13)], fill='black')
+
+    # Decimal format for kinetic constants
+    draw.text((230, arrow_y - 30), f"kf = {kf:.2f}", fill='black', font=font)
+    draw.text((230, arrow_y + 15), f"kb = {kb:.2f}", fill='black', font=font)
+
+    # Labels and concentrations
+    draw.text((10, 210), f"{reagent_label}", fill='black', font=font)
+    draw.text((10, 225), f"[{reagent_label}]i = {conc_reagent:.2f}M", fill='black', font=font)
+
+    draw.text((290, 210), f"{product_label}", fill='black', font=font)
+    draw.text((290, 225), f"[{product_label}]i = {conc_product:.2f}M", fill='black', font=font)
+
+    return canvas
+
+
+# Form input
+col1, col2 = st.columns(2)
+with col1:
+    reagent = st.text_input("Reagent (Formula or Name, e.g. H2O)")
+    k_forward = st.number_input("k_forward", min_value=0.0, value=1.0, format="%.6f")
+    init_conc_reagent = st.number_input("Initial concentration of Reagent", min_value=0.0, value=1.0, format="%.3f")
+with col2:
+    product = st.text_input("Product (Formula or Name, e.g. CO2)")
+    k_backward = st.number_input("k_backward", min_value=0.0, value=0.5, format="%.6f")
+    init_conc_product = st.number_input("Initial concentration of Product", min_value=0.0, value=0.0, format="%.3f")
+
+# Submit button
+if st.button("Add Reaction"):
+    if reagent and product:
+        reagent_smiles = get_smiles(reagent)
+        product_smiles = get_smiles(product)
+
+        if reagent_smiles and product_smiles:
+            st.session_state.reagents.append(reagent)
+            st.session_state.products.append(product)
+            st.session_state.kf.append(k_forward)
+            st.session_state.kb.append(k_backward)
+
+            for specie, conc in [(reagent, init_conc_reagent), (product, init_conc_product)]:
+                st.session_state.init_conc[specie] = conc
+
+            st.session_state.reactions.append({
+                'reagent': reagent,
+                'product': product,
+                'reagent_smiles': reagent_smiles,
+                'product_smiles': product_smiles,
+                'kf': k_forward,
+                'kb': k_backward
+            })
+
+            st.success(f"Added reaction: {reagent} ⇌ {product}")
+        else:
+            st.error("Could not resolve SMILES for reagent or product.")
+    else:
+        st.error("Please enter both reagent and product.")
+
+if st.button("Clear All Reactions"):
+    st.session_state.reactions = []
+    st.session_state.reagents = []
+    st.session_state.products = []
+    st.session_state.k_forward = []
+    st.session_state.k_backward = []
+    st.session_state.init_conc = {}
+    st.success("All reactions have been cleared.")
+
+
+# Visualization
+st.header("Reaction Visualizations")
+
+for idx, rxn in enumerate(st.session_state.reactions):
+    st.markdown(f"### Reaction {idx+1}: {rxn['reagent']} ⇌ {rxn['product']}")
+    
+    image = draw_reaction(
+        rxn['reagent_smiles'],
+        rxn['product_smiles'],
+        rxn['reagent'],
+        rxn['product'],
+        st.session_state.init_conc[rxn['reagent']],
+        st.session_state.init_conc[rxn['product']],
+        rxn['kf'],
+        rxn['kb']
+    )
+
+    if image:
+        st.image(image)
+
+    # Add remove button
+    if st.button(f"Remove Reaction {idx+1}", key=f"remove_{idx}"):
+        # Remove from all related state
+        st.session_state.reactions.pop(idx)
+        st.session_state.reagents.pop(idx)
+        st.session_state.products.pop(idx)
+        st.session_state.k_forward.pop(idx)
+        st.session_state.k_backward.pop(idx)
+        # You might also remove from concentrations if no longer used
+        break  # prevent index errors after state change
