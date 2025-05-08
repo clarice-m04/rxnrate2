@@ -43,6 +43,9 @@ if "fixed_reagent" not in st.session_state:
 if "species_list" not in st.session_state:
     st.session_state.species_list = []
 
+if "reaction_tuples" not in st.session_state:
+    st.session_state.reaction_tuples = []
+
 # Helper: fallback SMILES
 def get_smiles(query):
     fallback_smiles = {
@@ -151,8 +154,6 @@ if st.button("Add Reaction"):
             })
 
             # ✅ Append tuple with kb=None if it's 0    
-            if "reaction_tuples" not in st.session_state:
-                st.session_state.reaction_tuples = []
 
             kb_value = k_backward if k_backward != 0 else None
             reaction_tuple = (reagent, product, k_forward, kb_value)
@@ -180,15 +181,61 @@ if st.button("Add Reaction"):
     else:
         st.error("Please enter both reagent and product.")
 
+
+if st.button("Remove Last Reaction"):
+    if st.session_state.reactions:
+        # Remove the last elements
+        st.session_state.reactions.pop()
+        st.session_state.reagents.pop()
+        st.session_state.products.pop()
+        st.session_state.kf.pop()
+        st.session_state.kb.pop()
+        st.session_state.reaction_tuples.pop()
+
+        # Remove species if no longer used
+        used_species = set()
+        for r in st.session_state.reactions:
+            used_species.add(r['reagent'])
+            used_species.add(r['product'])
+
+        st.session_state.init_conc = {
+            k: v for k, v in st.session_state.init_conc.items() if k in used_species
+        }
+
+        # Rebuild species_list preserving order
+        species_seen = set()
+        st.session_state.species_list = []
+        for r in st.session_state.reactions:
+            if r["reagent"] not in species_seen:
+                st.session_state.species_list.append(r["reagent"])
+                species_seen.add(r["reagent"])
+            if r["product"] not in species_seen:
+                st.session_state.species_list.append(r["product"])
+                species_seen.add(r["product"])
+
+        # Update fixed reagent to new last product (or None if empty)
+        if st.session_state.reactions:
+            st.session_state.fixed_reagent = st.session_state.reactions[-1]["product"]
+        else:
+            st.session_state.fixed_reagent = None
+
+        st.success("✅ Last reaction removed.")
+        st.rerun()
+    else:
+        st.warning("⚠️ No reactions to remove.")
+
 if st.button("Clear All Reactions"):
     st.session_state.reactions = []
     st.session_state.reagents = []
     st.session_state.products = []
-    st.session_state.k_forward = []
-    st.session_state.k_backward = []
+    st.session_state.kf = []
+    st.session_state.kb = []
     st.session_state.init_conc = {}
-    st.success("All reactions have been cleared.")
+    st.session_state.fixed_reagent = None
+    st.session_state.species_list = []
+    st.session_state.reaction_tuples = []
 
+    st.success("All reactions have been cleared.")
 
 # Visualization
 st.header("Reaction Visualizations")
@@ -209,17 +256,6 @@ for idx, rxn in enumerate(st.session_state.reactions):
 
     if image:
         st.image(image)
-
-    # Add remove button
-    if st.button(f"Remove Reaction {idx+1}", key=f"remove_{idx}"):
-        # Remove from all related state
-        st.session_state.reactions.pop(idx)
-        st.session_state.reagents.pop(idx)
-        st.session_state.products.pop(idx)
-        st.session_state.k_forward.pop(idx)
-        st.session_state.k_backward.pop(idx)
-        # You might also remove from concentrations if no longer used
-        break  # prevent index errors after state change
 
 st.subheader("Stored Reaction Tuples")
 for r in st.session_state.reaction_tuples:
