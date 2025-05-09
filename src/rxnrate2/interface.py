@@ -8,7 +8,6 @@ st.write("Select the type of your reaction")
 click1 = st.button("Single reaction")
 click2 = st.button("Composite reaction") 
 
-if click1:
     
 # Reaction the user wants to monitor
 rxn = st.text_input("What is your reaction ? ")
@@ -19,7 +18,7 @@ type_rxn1 = st.selectbox("Select the type of reaction: ", options)
 
 st.write("You have chosen the mode : Reaction of type ")
 
-from rxnrate2.singlerxn1 import calculate_laplace_transforms, inverse_laplace_transform
+from rxnrate2.LaplaceTransform_singlerxn import calculate_laplace_transforms, inverse_laplace_transform
 reagents = ['water', 'potassium']
 products = ['hydrogen peroxide', 'oxygen']
 k = 2
