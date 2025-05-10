@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
 import sympy as sp
+import os
 
 def build_M_matrix(species, reactions):
     """Constructs matrix M from the rxn definitions
@@ -38,7 +39,7 @@ def solve_reaction(species, reactions, y0_vals, t_span=(0, 10), t_eval=None):
     sol = solve_ivp(ode_system, t_span, y0, args=(M,), method='RK45', t_eval=t_eval)
     return sol, M
 
-def plot_solution(sol, species,filename="reaction_plot.jpg"):
+def plot_solution(sol, species, filename):
     """plots each speacies' concentration"""
     for i, s in enumerate(species):
         plt.plot(sol.t, sol.y[i], label=s)
@@ -47,6 +48,12 @@ def plot_solution(sol, species,filename="reaction_plot.jpg"):
     plt.title('Concentration over time of each species')
     plt.legend()
     #plt.grid(True)
+
+    #os.makedirs(outdir, exist_ok=True)
+    #filepath = os.path.join(outdir, filename)
+    #plt.savefig(filepath, format='jpg', dpi=300)
+    #plt.close()
+
     plt.tight_layout()  # Ensures labels aren't cut off
     plt.savefig(filename, format='jpg', dpi=300)
     plt.close()  # Close the plot to avoid display if running in batch mode
@@ -60,16 +67,17 @@ def plot_solution(sol, species,filename="reaction_plot.jpg"):
 #    return yt, t
 
 # === Example Usage ===
-species_test = ['A', 'B', 'C', 'D']
-reactions_test = [
-    ('A', 'B', 1.0, None),
-    ('B', 'C', 0.5, 0.3),
-    ('C', 'A', 0.2, None),
-    ('C', 'D', 2.0, 0.4)
-]
-y0_vals = [1.0, 0.0, 0.0, 0.0]  # Initial concentrations for A, B, C, D
+# #species_test = ['A', 'B', 'C', 'D']
 
-sol, M = solve_reaction(species_test, reactions_test, y0_vals)
+#reactions_test = [
+#    ('A', 'B', 1.0, None),
+#    ('B', 'C', 0.5, 0.3),
+#    ('C', 'A', 0.2, None),
+#    ('C', 'D', 2.0, 0.4)
+#]
+#y0_vals = [1.0, 0.0, 0.0, 0.0]  # Initial concentrations for A, B, C, D
+
+#sol, M = solve_reaction(species_test, reactions_test, y0_vals)
 
 
 # Get symbolic expression
@@ -78,6 +86,26 @@ sol, M = solve_reaction(species_test, reactions_test, y0_vals)
 #for i, s in enumerate(species):
 #    print(f"{s}(t) = {yt[i]}")
 
-plot_solution(sol, species_test)
+#plot_solution(sol, species_test)
 
 #NB: je pourrais rajouter l'evaluation de la concentration a un temps t donné et qu'il soit marqué sur le graphe
+
+#import numpy as np
+#import matplotlib.pyplot as plt
+#from scipy.integrate import solve_ivp
+#from pathlib import Path
+#import os
+
+#species   = ['A', 'B', 'C']
+#reactions = [('A','B',1.0,None), ('B','C',0.5,0.3)]
+#y0        = [1,0,0]
+
+#sol, M = solve_reaction(species, reactions, y0)
+
+# choose a path you’re sure is writable
+#out_file = Path.cwd() / "reaction_plot.jpg"
+#print("Saving plot here:", out_file)
+
+#plot_solution(sol, species, filename=str(out_file))
+
+#print("File exists:", out_file.exists())

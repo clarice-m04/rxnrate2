@@ -1,10 +1,9 @@
 import streamlit as st
 
-import sys
-import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../')))
 
-from rxnrate2.ODE_linearrxn import solve_reaction, plot_solution
+import os
+
+from pages import solve_reaction, plot_solution
 
 from PIL import Image
 
@@ -186,9 +185,12 @@ if st.button("Add Reaction"):
 
             if st.session_state.reactions:
                 i_conc_list = list(st.session_state.init_conc.values())
-
                 s,m = solve_reaction(st.session_state.species_list, st.session_state.reaction_tuples, i_conc_list)
-                plot_solution(s,st.session_state.species_list)
+                
+                image_path = os.path.join(os.getcwd(), "pages/reaction_plot.jpg")
+                st.write(f"image path is: {image_path}")
+
+                plot_solution(s,st.session_state.species_list, image_path)
                 image = Image.open("reaction_plot.jpg")
                 
                 st.image(image, caption='Reaction Concentration Plot')
