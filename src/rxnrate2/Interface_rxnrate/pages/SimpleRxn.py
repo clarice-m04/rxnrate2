@@ -190,8 +190,10 @@ if st.button("Add Reaction"):
 
         s,m = solve_reaction(st.session_state.species_list, st.session_state.reaction_tuples, i_conc_list)
         plot_solution(s,st.session_state.species_list)
-        image = Image.open("reaction_plot.jpg")
-        st.image(image, caption='Reaction Concentration Plot')
+        current_dir = os.path.dirname(__file__)        # points to pages/
+        parent_dir = os.path.dirname(current_dir)       # points to Interface_rxnrate/
+        image_path = os.path.join(parent_dir, "reaction_plot.jpg")
+        st.image(image_path, caption="Reaction Rate Picture", use_container_width=True)
 
     
     else:

@@ -46,6 +46,7 @@ def plot_solution(sol, species,filename="reaction_plot.jpg"):
     plt.ylabel('Concentration')
     plt.title('Concentration over time of each species')
     plt.legend()
+    #plt.show()
     #plt.grid(True)
     plt.tight_layout()  # Ensures labels aren't cut off
     plt.savefig(filename, format='jpg', dpi=300)
