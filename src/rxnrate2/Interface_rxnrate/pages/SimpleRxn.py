@@ -183,15 +183,19 @@ if st.button("Add Reaction"):
                 st.session_state.species_list.append(product)
 
             st.success(f"Added reaction: {reagent} ⇌ {product}")
+
+            if st.session_state.reactions:
+                i_conc_list = list(st.session_state.init_conc.values())
+
+                s,m = solve_reaction(st.session_state.species_list, st.session_state.reaction_tuples, i_conc_list)
+                plot_solution(s,st.session_state.species_list)
+                image = Image.open("reaction_plot.jpg")
+                
+                st.image(image, caption='Reaction Concentration Plot')
+
         else:
             st.error("Could not resolve SMILES for reagent or product.")
-    if st.session_state.reactions:
-        i_conc_list = list(st.session_state.init_conc.values())
 
-        s,m = solve_reaction(st.session_state.species_list, st.session_state.reaction_tuples, i_conc_list)
-        plot_solution(s,st.session_state.species_list)
-        image = Image.open("reaction_plot.jpg")
-        st.image(image, caption='Reaction Concentration Plot')
 
     
     else:
