@@ -6,6 +6,7 @@ import os
 from rxnrate2.ODE_linearrxn import solve_reaction, plot_solution
 
 from PIL import Image
+from pathlib import Path
 
 # Times new roman font
 st.markdown("""
@@ -194,14 +195,32 @@ if st.button("Add Reaction"):
             print(f"Directory for figures already exists")
         except Exception as error: # other error
             print(f"An Error occured: {error}")
-        filename = "./figures/time_evolution.jpg"
+        
+        # Build the path correctly
+        #filename = Path(__file__).parent / "figures" / "time_evolution.jpg"
+
+        # Check if the file exists first
+        #if filename.is_file():
+            #st.image(str(filename), caption="Reaction Rate Picture", use_container_width=True)
+        #else:
+            #st.error(f"Image file not found: {filename}")
+        
+        #filename = "./figures/time_evolution.jpg"
         
         # Solve reaction rate equations to compute concentrations
         s,m = solve_reaction(st.session_state.species_list, st.session_state.reaction_tuples, i_conc_list)
-        plot_solution(s,st.session_state.species_list, filename=filename)
+        plot_solution(s,st.session_state.species_list)
+
+        #Trying to find the path to get the figure made with the function plot_solution
+        image_path = os.path.join(os.path.dirname(__file__), "reaction_plot.jpg")
+        st.image(image_path, caption="Reaction Rate Picture", use_container_width=True)
+
+        #Checking that the path exists and the document with the graph of the reaction exists
+        st.write("Current working directory:", os.getcwd())
+        st.write("File exists?", os.path.exists("reaction_plot.jpg"))
         
         # Display plot of concentrations that has been computed
-        st.image(filename, caption="Reaction Rate Picture", use_container_width=True)
+        st.image("reaction_plot.jpg", caption="Reaction Rate Picture", use_container_width=True)
 
     else:
         st.error("Please enter both reagent and product.")
