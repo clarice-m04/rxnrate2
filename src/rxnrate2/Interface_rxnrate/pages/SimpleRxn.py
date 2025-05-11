@@ -2,7 +2,7 @@ import streamlit as st
 
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../')))
+#sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../')))
 
 from rxnrate2.ODE_linearrxn import solve_reaction, plot_solution
 
@@ -188,14 +188,23 @@ if st.button("Add Reaction"):
     if st.session_state.reactions:
         i_conc_list = list(st.session_state.init_conc.values())
 
+        # Create directoy in which to store the figures
+        try:
+            os.mkdir("figures")
+        except FileExistsError: # directory already exists
+            print(f"Directory for figures already exists")
+        except Exception as error: # other error
+            print(f"An Error occured: {error}")
+        filename = "./figures/time_evolution.jpg"
+        
+        # Solve reaction rate equations to compute concentrations
         s,m = solve_reaction(st.session_state.species_list, st.session_state.reaction_tuples, i_conc_list)
-        plot_solution(s,st.session_state.species_list)
-        current_dir = os.path.dirname(__file__)        # points to pages/
-        parent_dir = os.path.dirname(current_dir)       # points to Interface_rxnrate/
-        image_path = os.path.join(parent_dir, "reaction_plot.jpg")
-        st.image(image_path, caption="Reaction Rate Picture", use_container_width=True)
+        plot_solution(s,st.session_state.species_list, filename=filename)
+        
+        # Display plot of concentrations that has been computed
+        #image_path = os.path.join(parent_dir, "reaction_plot.jpg")
+        st.image(filename, caption="Reaction Rate Picture", use_container_width=True)
 
-    
     else:
         st.error("Please enter both reagent and product.")
 
