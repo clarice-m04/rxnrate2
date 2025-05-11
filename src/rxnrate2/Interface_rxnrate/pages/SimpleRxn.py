@@ -2,7 +2,6 @@ import streamlit as st
 
 import sys
 import os
-#sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../')))
 
 from rxnrate2.ODE_linearrxn import solve_reaction, plot_solution
 
@@ -202,7 +201,6 @@ if st.button("Add Reaction"):
         plot_solution(s,st.session_state.species_list, filename=filename)
         
         # Display plot of concentrations that has been computed
-        #image_path = os.path.join(parent_dir, "reaction_plot.jpg")
         st.image(filename, caption="Reaction Rate Picture", use_container_width=True)
 
     else:
