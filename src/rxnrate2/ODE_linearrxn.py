@@ -36,9 +36,10 @@ def solve_reaction(species, reactions, y0_vals, t_span=(0, 10), t_eval=None):
     if t_eval is None:
         t_eval = np.linspace(t_span[0], t_span[1], 200)
     sol = solve_ivp(ode_system, t_span, y0, args=(M,), method='RK45', t_eval=t_eval)
+
     return sol, M
 
-def plot_solution(sol, species):
+def plot_solution(sol, species, filename="reaction_plot.jpg"):
     """plots each speacies' concentration"""
     for i, s in enumerate(species):
         plt.plot(sol.t, sol.y[i], label=s)
@@ -46,8 +47,11 @@ def plot_solution(sol, species):
     plt.ylabel('Concentration', fontname='Times New Roman', fontsize=14)
     plt.title('Concentration over time of each species', fontname='Times New Roman', fontsize=14)
     plt.legend()
+    #plt.show()
     #plt.grid(True)
-    plt.show()
+    plt.tight_layout()  # Ensures labels aren't cut off
+    plt.savefig(filename, dpi=300)
+    plt.close() # Close the plot to avoid display if running in batch mode
 
 #def symbolic_solution(M_numeric, y0_numeric):
 #    """gives symbolic function for each concentration"""
