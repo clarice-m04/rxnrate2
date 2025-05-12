@@ -212,7 +212,7 @@ if st.button("Add Reaction"):
         plot_solution(s,st.session_state.species_list)
 
         #Trying to find the path to get the figure made with the function plot_solution
-        image_path = os.path.join(os.path.dirname(__file__), "reaction_plot.jpg")
+        image_path = os.path.join(os.path.dirname(__file__), "time_evolution.jpg")
         st.image(image_path, caption="Reaction Rate Picture", use_container_width=True)
 
         #Checking that the path exists and the document with the graph of the reaction exists
@@ -220,7 +220,7 @@ if st.button("Add Reaction"):
         st.write("File exists?", os.path.exists("reaction_plot.jpg"))
         
         # Display plot of concentrations that has been computed
-        st.image("reaction_plot.jpg", caption="Reaction Rate Picture", use_container_width=True)
+        st.image("time_evolution.jpg", caption="Reaction Rate Picture", use_container_width=True)
 
     else:
         st.error("Please enter both reagent and product.")
