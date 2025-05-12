@@ -9,14 +9,13 @@ rxnrate2
 <br>
 
 
-# rxnrate2
 
 Calculates and graphs the way concentrations evolve in a chemical reaction system using ODEs.  
 Supports both linear (matrix-based) and nonlinear (mass-action) kinetics, with options for interactive plotting and a Streamlit GUI.
 
 ---
 
-## 🔥 Usage
+##  Usage
 
 ### Linear (first-order) system example
 
@@ -64,7 +63,7 @@ streamlit run app.py
 
 ---
 
-## 👩‍💻 Installation
+##  Installation
 
 Create a new environment (recommended), you may give it any name:
 
@@ -89,30 +88,6 @@ To install full dependencies including the GUI:
 
 ```bash
 pip install ".[full]"
-```
-
----
-
-## 🛠️ Development Installation
-
-Initialize Git and push to GitHub (only the first time):
-
-> Make sure to create the remote repo at https://github.com/clarice-m04/rxnrate2
-
-```bash
-git init
-git add * 
-git add .*
-git commit -m "Initial commit"
-git branch -M main
-git remote add origin git@github.com:clarice-m04/rxnrate2.git
-git push -u origin main
-```
-
-Then for editable installs with test and docs support:
-
-```bash
-pip install -e ".[test,doc]"
 ```
 
 ---
