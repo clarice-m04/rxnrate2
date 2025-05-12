@@ -43,8 +43,8 @@ if 'reagents' not in st.session_state:
     st.session_state.init_conc = {}
     st.session_state.reactions = []
 
-if "fixed_reagent" not in st.session_state:
-    st.session_state.fixed_reagent = None
+#if "fixed_reagent" not in st.session_state:
+#    st.session_state.fixed_reagent = None#
 
 if "species_list" not in st.session_state:
     st.session_state.species_list = []
@@ -52,8 +52,8 @@ if "species_list" not in st.session_state:
 if "reaction_tuples" not in st.session_state:
     st.session_state.reaction_tuples = []
 
-# Helper: fallback SMILES
-def get_smiles(query):
+ #Helper: fallback SMILESdef get_smiles(query):
+def get_smiles(query): 
     fallback_smiles = {
         'H2O': 'O',
         'CO2': 'O=C=O',
@@ -61,9 +61,9 @@ def get_smiles(query):
         'H2': '[H][H]',
         'N2': 'N#N',
         'CH4': 'C',
-        'NH3': 'N',
+        'NH3': 'N',#
     }
-    try:
+    try:#
         compound = pcp.get_compounds(query, 'name')
         if compound:
             return compound[0].isomeric_smiles
@@ -122,11 +122,11 @@ def draw_reaction(reagent_smiles, product_smiles, reagent_label, product_label, 
 col1, col2 = st.columns(2)
 with col1:
     # If previous reactions exist, use the last product as the default reagent
-    if st.session_state.fixed_reagent:
-        reagent = st.session_state.fixed_reagent
-        st.markdown(f"**Reagent:** {reagent} *(auto-filled from previous product)*")
-    else:
-        reagent = st.text_input("Reagent (Formula or Name, e.g. H2O)")
+    #if st.session_state.fixed_reagent:
+    #    reagent = st.session_state.fixed_reagent
+    #    st.markdown(f"**Reagent:** {reagent} *(auto-filled from previous product)*")
+    #else:
+    reagent = st.text_input("Reagent (Formula or Name, e.g. H2O)")
 
     k_forward = st.number_input("k_forward", min_value=0.0, value=1.0, format="%.6f")
     init_conc_reagent = st.number_input("Initial concentration of Reagent", min_value=0.0, value=1.0, format="%.3f")
@@ -166,12 +166,12 @@ if st.button("Add Reaction"):
             st.session_state.reaction_tuples.append(reaction_tuple)
 
             # After adding the reaction
-            if not st.session_state.fixed_reagent:
+            #if not st.session_state.fixed_reagent:
             # Set reagent to the first manually entered one
-                st.session_state.fixed_reagent = product
-            else:
-            # Update reagent to next product to continue chain
-                st.session_state.fixed_reagent = product
+            #    st.session_state.fixed_reagent = product
+            #else:
+            # Update reagent to next product to continue chain#
+            #    st.session_state.fixed_reagent = product
 
             # Append reagent if not already present
             if reagent not in st.session_state.species_list:
@@ -194,7 +194,8 @@ if st.button("Add Reaction"):
             print(f"Directory for figures already exists")
         except Exception as error: # other error
             print(f"An Error occured: {error}")
-        filename = "./figures/time_evolution.jpg"
+        
+        filename = f"./figures/{st.session_state.reagents}_to_{st.session_state.products}.jpg"
         
         # Solve reaction rate equations to compute concentrations
         s,m = solve_reaction(st.session_state.species_list, st.session_state.reaction_tuples, i_conc_list)
@@ -239,12 +240,21 @@ if st.button("Remove Last Reaction"):
                 species_seen.add(r["product"])
 
         # Update fixed reagent to new last product (or None if empty)
-        if st.session_state.reactions:
-            st.session_state.fixed_reagent = st.session_state.reactions[-1]["product"]
-        else:
-            st.session_state.fixed_reagent = None
+        #if st.session_state.reactions:
+        #    st.session_state.fixed_reagent = st.session_state.reactions[-1]["product"]
+        #else:
+        #    st.session_state.fixed_reagent = None
 
         st.success("✅ Last reaction removed.")
+
+        #Remove last plot from the file
+        #os.remove(filename)
+
+        #filename = #
+        
+        # Display plot of concentrations that has been computed
+        #st.image(filename, caption="Reaction Rate Picture", use_container_width=True)
+
         st.rerun()
     else:
         st.warning("⚠️ No reactions to remove.")
@@ -256,13 +266,13 @@ if st.button("Clear All Reactions"):
     st.session_state.kf = []
     st.session_state.kb = []
     st.session_state.init_conc = {}
-    st.session_state.fixed_reagent = None
+    #st.session_state.fixed_reagent = None
     st.session_state.species_list = []
     st.session_state.reaction_tuples = []
 
     st.success("All reactions have been cleared.")
 
-# Visualization
+# Visualizations
 st.header("Reaction Visualizations")
 
 for idx, rxn in enumerate(st.session_state.reactions):
@@ -282,9 +292,9 @@ for idx, rxn in enumerate(st.session_state.reactions):
     if image:
         st.image(image)
 
-st.subheader("Stored Reaction Tuples")
-for r in st.session_state.reaction_tuples:
-    st.write(r)
-
-st.markdown("### All Species (Ordered, No Duplicates):")
-st.write(st.session_state.species_list)
+#st.subheader("Stored Reaction Tuples")
+#for r in st.session_state.reaction_tuples:
+#    st.write(r)
+#
+#st.markdown("### All Species (Ordered, No Duplicates):")
+#st.write(st.session_state.species_list)
