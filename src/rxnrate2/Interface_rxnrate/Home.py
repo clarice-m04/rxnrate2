@@ -1,6 +1,7 @@
 import streamlit as st
 import base64
 from pathlib import Path
+from functions import set_background
 
 
 #from rxnrate2.Interface_rxnrate.pages import SimpleRxn, ComplexRxn
@@ -20,29 +21,6 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# backround of the application
-
-def set_background(jpg_file):
-    current_dir = Path(__file__).parent
-    image_path = current_dir / jpg_file
-
-    with image_path.open("rb") as image_file:
-        encoded = base64.b64encode(image_file.read()).decode()
-
-    st.markdown(
-        f"""
-        <style>
-        .stApp {{
-            background: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)),
-                        url("data:image/jpg;base64,{encoded}");
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
 
 set_background("rxnratepic.jpg")
 
@@ -77,19 +55,3 @@ with col2:
     st.write("- Reaction of type A + B -> C")
     st.write("- Two or more reactants give one product")
     st.page_link("pages/ComplexRxn.py", label="More complex reaction", icon="2️⃣")
-    
-# col1, col2 = st.columns(2)
-#with col1:
-     #if st.button("Single reaction"):
-     #   st.session_state.page = "ODE_singlerxn_int"
-   
-#with col2:
-    #if st.button("Composit reaction"):
-        #st.session_state.page = "ODE_linearrxn_int"
-
-# Navigation
-
-#if st.session_state.page == "ODE_singlerxn_int":
-    #ODE_singlerxn_int.single_rxn()  
-#elif st.session_state.page == "ODE_linearrxn_int":
-    #ODE_linearrxn_int.linear_rxn()

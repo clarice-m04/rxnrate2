@@ -6,7 +6,11 @@ import pubchempy as pcp
 import base64
 from pathlib import Path
 from rxnrate2.Interface_rxnrate.functions import set_background
+<<<<<<< HEAD
 from .SimpleRxn import get_smiles, draw_reaction
+=======
+from SimpleRxn import get_smiles, draw_reaction
+>>>>>>> a65d858782b81cae8403a1d6e553f44a234c0d7b
 
 
 # Times new roman font

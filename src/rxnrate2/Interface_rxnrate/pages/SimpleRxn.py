@@ -193,15 +193,24 @@ if st.button("Add Reaction"):
         except Exception as error: # other error
             print(f"An Error occured: {error}")
         
+
         # The file is named avec the reagents and the products
         filename = f"./figures/{','.join(st.session_state.reagents)}_to_{','.join(st.session_state.products)}.jpg"
-        
-        # Solve reaction rate equations to compute concentrations
+
+# Solve reaction rate equations to compute concentrations
         s,m = solve_reaction(st.session_state.species_list, st.session_state.reaction_tuples, i_conc_list)
-        plot_solution(s,st.session_state.species_list, filename=filename)
+        plot_solution(s,st.session_state.species_list)
+
+        #Trying to find the path to get the figure made with the function plot_solution
+        image_path = os.path.join(os.path.dirname(__file__), "time_evolution.jpg")
+        st.image(image_path, caption="Reaction Rate Picture", use_container_width=True)
+
+        #Checking that the path exists and the document with the graph of the reaction exists
+        st.write("Current working directory:", os.getcwd())
+        st.write("File exists?", os.path.exists("reaction_plot.jpg"))
         
         # Display plot of concentrations that has been computed
-        st.image(filename, caption="Reaction Rate Picture", use_container_width=True)
+        st.image("time_evolution.jpg", caption="Reaction Rate Picture", use_container_width=True)
 
     else:
         st.error("Please enter both reagent and product.")
