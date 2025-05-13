@@ -9,71 +9,107 @@ rxnrate2
 <br>
 
 
-Calculates and graphs the way concentrations advance in a reaction
 
-## 🔥 Usage
+Calculates and graphs the way concentrations evolve in a chemical reaction system using ODEs.  
+Supports both linear (matrix-based) and nonlinear (mass-action) kinetics, with options for interactive plotting and a Streamlit GUI.
+
+---
+
+##  Usage
+
+### Linear (first-order) system example
 
 ```python
-from mypackage import main_func
+from rxnrate2.linear import build_M_matrix, solve_reaction, plot_solution
 
-# One line to rule them all
-result = main_func(data)
+M = build_M_matrix([
+    ("A", "B", 1.0),
+    ("B", "C", 0.5),
+    ("C", "B", 0.2),
+])
+y0 = [0.5, 0.0, 0.0]  # initial concentrations
+t_span = (0, 20)
+
+sol = solve_reaction(M, y0, t_span)
+plot_solution(sol)
 ```
 
-This usage example shows how to quickly leverage the package's main functionality with just one line of code (or a few lines of code). 
-After importing the `main_func` (to be renamed by you), you simply pass in your `data` and get the `result` (this is just an example, your package might have other inputs and outputs). 
-Short and sweet, but the real power lies in the detailed documentation.
+### Nonlinear (mass-action) system example
 
-## 👩‍💻 Installation
+```python
+from rxnrate2.nonlinear import solve_reactions, plot_solution
 
-Create a new environment, you may also give the environment a different name. 
+reactions = [
+    ("A + B", "C", 1.0),
+    ("C", "A + B", 0.5),
+    ("C", "A", 0.2),
+    ("A + B + C", "D + E", 0.5),
+    ("D + E", "A + B + C", 0.5),
+]
+initial_conc = {"A": 1.0, "B": 1.0, "C": 0.0, "D": 0.0, "E": 0.2}
+t_span = (0, 30)
 
+sol = solve_reactions(reactions, initial_conc, t_span)
+plot_solution(sol)
 ```
-conda create -n rxnrate2 python=3.10 
+
+### GUI
+
+You can also launch the interactive interface:
+
+```bash
+streamlit run app.py
 ```
 
-```
+---
+
+##  Installation
+
+Create a new environment (recommended), you may give it any name:
+
+```bash
+conda create -n rxnrate2 python=3.10
 conda activate rxnrate2
-(conda_env) $ pip install .
 ```
 
-If you need jupyter lab, install it 
+Install the package locally:
 
-```
-(rxnrate2) $ pip install jupyterlab
-```
-
-
-## 🛠️ Development installation
-
-Initialize Git (only for the first time). 
-
-Note: You should have create an empty repository on `https://github.com:clarice-m04/rxnrate2`.
-
-```
-git init
-git add * 
-git add .*
-git commit -m "Initial commit" 
-git branch -M main
-git remote add origin git@github.com:clarice-m04/rxnrate2.git 
-git push -u origin main
+```bash
+pip install .
 ```
 
-Then add and commit changes as usual. 
+If you're working in a notebook:
 
-To install the package, run
-
-```
-(rxnrate2) $ pip install -e ".[test,doc]"
+```bash
+pip install jupyterlab
 ```
 
-### Run tests and coverage
+To install full dependencies including the GUI:
+
+```bash
+pip install ".[full]"
+```
+
+---
+
+## 📁 Project Structure
 
 ```
-(conda_env) $ pip install tox
-(conda_env) $ tox
+rxnrate2/
+├── linear/         # Matrix-based linear ODE solver
+├── nonlinear/      # Mass-action nonlinear ODE solver
+├── app.py          # Streamlit GUI
+├── examples/       # Jupyter notebooks and tests
+└── ...
 ```
 
+---
 
+## 🧪 Examples
+
+See the `examples/` folder for real usage of:
+
+- Reversible and irreversible reactions
+- Linear and nonlinear systems
+- Chained and complex multi-step mechanisms
 
