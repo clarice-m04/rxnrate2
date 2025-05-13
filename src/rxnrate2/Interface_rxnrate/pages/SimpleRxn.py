@@ -1,11 +1,13 @@
 import streamlit as st
-
 import sys
 import os
+import pubchempy as pcp
 
 from rxnrate2.ODE_linearrxn import solve_reaction, plot_solution
+from rdkit import Chem
+from rdkit.Chem import Draw
+from PIL import Image, ImageDraw, ImageFont
 
-from PIL import Image
 
 # Times new roman font
 st.markdown("""
@@ -26,12 +28,6 @@ st.markdown("""
 st.title("Welcome in linear reaction part")
 
 ###Inputs from the user###
-import streamlit as st
-from rdkit import Chem
-from rdkit.Chem import Draw
-from PIL import Image, ImageDraw, ImageFont
-import pubchempy as pcp
-
 st.title("Chemical Reaction Collector")
 
 # Data structures
@@ -42,9 +38,6 @@ if 'reagents' not in st.session_state:
     st.session_state.kb = []
     st.session_state.init_conc = {}
     st.session_state.reactions = []
-
-#if "fixed_reagent" not in st.session_state:
-#    st.session_state.fixed_reagent = None#
 
 if "species_list" not in st.session_state:
     st.session_state.species_list = []
@@ -117,15 +110,9 @@ def draw_reaction(reagent_smiles, product_smiles, reagent_label, product_label, 
 
     return canvas
 
-
 # Form input
 col1, col2 = st.columns(2)
 with col1:
-    # If previous reactions exist, use the last product as the default reagent
-    #if st.session_state.fixed_reagent:
-    #    reagent = st.session_state.fixed_reagent
-    #    st.markdown(f"**Reagent:** {reagent} *(auto-filled from previous product)*")
-    #else:
     reagent = st.text_input("Reagent (Formula or Name, e.g. H2O)")
 
     k_forward = st.number_input("k_forward", min_value=0.0, value=1.0, format="%.6f")
@@ -165,14 +152,6 @@ if st.button("Add Reaction"):
             reaction_tuple = (reagent, product, k_forward, kb_value)
             st.session_state.reaction_tuples.append(reaction_tuple)
 
-            # After adding the reaction
-            #if not st.session_state.fixed_reagent:
-            # Set reagent to the first manually entered one
-            #    st.session_state.fixed_reagent = product
-            #else:
-            # Update reagent to next product to continue chain#
-            #    st.session_state.fixed_reagent = product
-
             # Append reagent if not already present
             if reagent not in st.session_state.species_list:
                 st.session_state.species_list.append(reagent)
@@ -195,7 +174,7 @@ if st.button("Add Reaction"):
         except Exception as error: # other error
             print(f"An Error occured: {error}")
         
-        filename = f"./figures/{st.session_state.reagents}_to_{st.session_state.products}.jpg"
+        filename = f"./figures/{','.join(st.session_state.reagents)}_to_{','.join(st.session_state.products)}.jpg"
         
         # Solve reaction rate equations to compute concentrations
         s,m = solve_reaction(st.session_state.species_list, st.session_state.reaction_tuples, i_conc_list)
@@ -207,9 +186,11 @@ if st.button("Add Reaction"):
     else:
         st.error("Please enter both reagent and product.")
 
-
 if st.button("Remove Last Reaction"):
     if st.session_state.reactions:
+        #Remove last plot from the file
+        filename = f"./figures/{','.join(st.session_state.reagents)}_to_{','.join(st.session_state.products)}.jpg"
+        os.remove(filename)
         # Remove the last elements
         st.session_state.reactions.pop()
         st.session_state.reagents.pop()
@@ -239,23 +220,15 @@ if st.button("Remove Last Reaction"):
                 st.session_state.species_list.append(r["product"])
                 species_seen.add(r["product"])
 
-        # Update fixed reagent to new last product (or None if empty)
-        #if st.session_state.reactions:
-        #    st.session_state.fixed_reagent = st.session_state.reactions[-1]["product"]
-        #else:
-        #    st.session_state.fixed_reagent = None
-
         st.success("✅ Last reaction removed.")
 
-        #Remove last plot from the file
-        #os.remove(filename)
-
-        #filename = #
+        filename = f"./figures/{','.join(st.session_state.reagents)}_to_{','.join(st.session_state.products)}.jpg"
         
         # Display plot of concentrations that has been computed
-        #st.image(filename, caption="Reaction Rate Picture", use_container_width=True)
+        st.image(filename, caption="Reaction Rate Picture", use_container_width=True)
 
         st.rerun()
+
     else:
         st.warning("⚠️ No reactions to remove.")
 
@@ -266,7 +239,6 @@ if st.button("Clear All Reactions"):
     st.session_state.kf = []
     st.session_state.kb = []
     st.session_state.init_conc = {}
-    #st.session_state.fixed_reagent = None
     st.session_state.species_list = []
     st.session_state.reaction_tuples = []
 
@@ -292,9 +264,9 @@ for idx, rxn in enumerate(st.session_state.reactions):
     if image:
         st.image(image)
 
-#st.subheader("Stored Reaction Tuples")
-#for r in st.session_state.reaction_tuples:
-#    st.write(r)
-#
-#st.markdown("### All Species (Ordered, No Duplicates):")
-#st.write(st.session_state.species_list)
+st.subheader("Stored Reaction Tuples")
+for r in st.session_state.reaction_tuples:
+    st.write(r)
+
+st.markdown("### All Species (Ordered, No Duplicates):")
+st.write(st.session_state.species_list)
