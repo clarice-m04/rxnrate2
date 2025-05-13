@@ -8,44 +8,9 @@ from rdkit import Chem
 from rdkit.Chem import Draw
 from PIL import Image, ImageDraw, ImageFont
 
+### Definition of functions to draw the reactions using SMILES ###
 
-# Times new roman font
-st.markdown("""
-    <style>
-    * {
-        font-family: 'Times New Roman', Times, serif !important;
-    }
-    html, body, [class*="css"] {
-        font-family: 'Times New Roman', Times, serif !important;
-    }
-    .stText, .stMarkdown, .stDataFrame, .stTable, .stButton, .stHeader, .stSubheader, .stCaption {
-        font-family: 'Times New Roman', Times, serif !important;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-#def linear_rxn():
-st.title("Welcome in linear reaction part")
-
-###Inputs from the user###
-st.title("Chemical Reaction Collector")
-
-# Data structures
-if 'reagents' not in st.session_state:
-    st.session_state.reagents = []
-    st.session_state.products = []
-    st.session_state.kf = []
-    st.session_state.kb = []
-    st.session_state.init_conc = {}
-    st.session_state.reactions = []
-
-if "species_list" not in st.session_state:
-    st.session_state.species_list = []
-
-if "reaction_tuples" not in st.session_state:
-    st.session_state.reaction_tuples = []
-
- #Helper: fallback SMILESdef get_smiles(query):
+## Helper: fallback SMILESdef get_smiles(query):
 def get_smiles(query): 
     fallback_smiles = {
         'H2O': 'O',
@@ -64,7 +29,7 @@ def get_smiles(query):
         pass
     return fallback_smiles.get(query.strip(), None)
 
-# Helper: drawing function
+## Helper: drawing function
 def draw_reaction(reagent_smiles, product_smiles, reagent_label, product_label, conc_reagent, conc_product, kf, kb):
     # Try to use Times New Roman; fallback to default
     try:
@@ -110,7 +75,45 @@ def draw_reaction(reagent_smiles, product_smiles, reagent_label, product_label, 
 
     return canvas
 
-# Form input
+### Define interactive page with buttons ###
+
+## Times new roman font
+st.markdown("""
+    <style>
+    * {
+        font-family: 'Times New Roman', Times, serif !important;
+    }
+    html, body, [class*="css"] {
+        font-family: 'Times New Roman', Times, serif !important;
+    }
+    .stText, .stMarkdown, .stDataFrame, .stTable, .stButton, .stHeader, .stSubheader, .stCaption {
+        font-family: 'Times New Roman', Times, serif !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+## Title
+st.title("Welcome in linear reaction part")
+
+## Subtitle
+st.title("Chemical Reaction Collector")
+
+## Data structures
+if 'reagents' not in st.session_state:
+    st.session_state.reagents = []
+    st.session_state.products = []
+    st.session_state.kf = []
+    st.session_state.kb = []
+    st.session_state.init_conc = {}
+    st.session_state.reactions = []
+
+if "species_list" not in st.session_state:
+    st.session_state.species_list = []
+
+if "reaction_tuples" not in st.session_state:
+    st.session_state.reaction_tuples = []
+
+## Form input
 col1, col2 = st.columns(2)
 with col1:
     reagent = st.text_input("Reagent (Formula or Name, e.g. H2O)")
@@ -122,7 +125,7 @@ with col2:
     k_backward = st.number_input("k_backward", min_value=0.0, value=0.5, format="%.6f")
     init_conc_product = st.number_input("Initial concentration of Product", min_value=0.0, value=0.0, format="%.3f")
 
-# Submit button
+## Submit button
 if st.button("Add Reaction"):
     if reagent and product:
         reagent_smiles = get_smiles(reagent)
@@ -146,7 +149,7 @@ if st.button("Add Reaction"):
                 'kb': k_backward
             })
 
-            # ✅ Append tuple with kb=None if it's 0    
+            # Append tuple with kb=None if it's 0    
 
             kb_value = k_backward if k_backward != 0 else None
             reaction_tuple = (reagent, product, k_forward, kb_value)
@@ -174,6 +177,7 @@ if st.button("Add Reaction"):
         except Exception as error: # other error
             print(f"An Error occured: {error}")
         
+        # The file is named avec the reagents and the products
         filename = f"./figures/{','.join(st.session_state.reagents)}_to_{','.join(st.session_state.products)}.jpg"
         
         # Solve reaction rate equations to compute concentrations
@@ -186,11 +190,14 @@ if st.button("Add Reaction"):
     else:
         st.error("Please enter both reagent and product.")
 
+## Remove last reaction button 
 if st.button("Remove Last Reaction"):
     if st.session_state.reactions:
+
         #Remove last plot from the file
         filename = f"./figures/{','.join(st.session_state.reagents)}_to_{','.join(st.session_state.products)}.jpg"
         os.remove(filename)
+
         # Remove the last elements
         st.session_state.reactions.pop()
         st.session_state.reagents.pop()
@@ -232,6 +239,7 @@ if st.button("Remove Last Reaction"):
     else:
         st.warning("⚠️ No reactions to remove.")
 
+## Clear all reactions button
 if st.button("Clear All Reactions"):
     st.session_state.reactions = []
     st.session_state.reagents = []
@@ -244,9 +252,10 @@ if st.button("Clear All Reactions"):
 
     st.success("All reactions have been cleared.")
 
-# Visualizations
+## Visualizations
 st.header("Reaction Visualizations")
 
+## Draw the reaction using SMILES 
 for idx, rxn in enumerate(st.session_state.reactions):
     st.markdown(f"### Reaction {idx+1}: {rxn['reagent']} ⇌ {rxn['product']}")
     
@@ -264,9 +273,11 @@ for idx, rxn in enumerate(st.session_state.reactions):
     if image:
         st.image(image)
 
+## Show the stored tuples
 st.subheader("Stored Reaction Tuples")
 for r in st.session_state.reaction_tuples:
     st.write(r)
 
+## Show the list of species 
 st.markdown("### All Species (Ordered, No Duplicates):")
 st.write(st.session_state.species_list)
