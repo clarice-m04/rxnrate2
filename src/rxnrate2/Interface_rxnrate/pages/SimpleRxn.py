@@ -8,6 +8,8 @@ from rdkit import Chem
 from rdkit.Chem import Draw
 from PIL import Image, ImageDraw, ImageFont
 
+
+
 ### Definition of functions to draw the reactions using SMILES ###
 
 ## Helper: fallback SMILESdef get_smiles(query):
@@ -75,6 +77,8 @@ def draw_reaction(reagent_smiles, product_smiles, reagent_label, product_label, 
 
     return canvas
 
+
+
 ### Define interactive page with buttons ###
 
 ## Times new roman font
@@ -112,6 +116,18 @@ if "species_list" not in st.session_state:
 
 if "reaction_tuples" not in st.session_state:
     st.session_state.reaction_tuples = []
+
+if st.session_state.get("last_action_message"):
+    st.success(st.session_state["last_action_message"])
+    if os.path.exists(st.session_state["new_image_to_show"]):
+        st.image(
+            st.session_state["new_image_to_show"],
+            caption="Reaction Rate Picture",
+            use_container_width=True
+        )
+    # Clear the message and image info so it's not shown again
+    del st.session_state["last_action_message"]
+    del st.session_state["new_image_to_show"]
 
 ## Form input
 col1, col2 = st.columns(2)
@@ -229,11 +245,17 @@ if st.button("Remove Last Reaction"):
 
         st.success("✅ Last reaction removed.")
 
-        filename = f"./figures/{','.join(st.session_state.reagents)}_to_{','.join(st.session_state.products)}.jpg"
+        ##filename = f"./figures/{','.join(st.session_state.reagents)}_to_{','.join(st.session_state.products)}.jpg"
         
         # Display plot of concentrations that has been computed
-        st.image(filename, caption="Reaction Rate Picture", use_container_width=True)
+        #st.image(filename, caption="Reaction Rate Picture", use_container_width=True)
 
+        # Save new image filename to display later
+        new_filename = f"./figures/{','.join(st.session_state.reagents)}_to_{','.join(st.session_state.products)}.jpg"
+        st.session_state["last_action_message"] = "✅ Last reaction removed."
+        st.session_state["new_image_to_show"] = new_filename
+
+        # Rerun to show the updated UI
         st.rerun()
 
     else:
