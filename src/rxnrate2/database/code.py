@@ -2,10 +2,9 @@ import numpy as np
 import pandas as pd
 from rdkit import Chem
 from rdkit.Chem import Draw
-from rdkit.Chem.Draw import IPythonConsole
-IPythonConsole.ipython_useSVG=True
 
-data = pd.read_csv('Data_projet.csv', sep = ";")
+
+data = pd.read_csv("Data_projet.csv", sep = ";")
 df = pd.DataFrame(data)
 
 # Check if your reactants are in the database
