@@ -1,9 +1,10 @@
+# Se mettre dans le dossier git\rxnrate2\src\rxnrate2\database pour run ce fichier
+#(sinon Data_projet.csv est pas trouvé par le code)
+
 import numpy as np
 import pandas as pd
 from rdkit import Chem
 from rdkit.Chem import Draw
-from rdkit.Chem.Draw import IPythonConsole
-IPythonConsole.ipython_useSVG=True
 
 data = pd.read_csv('Data_projet.csv', sep = ";")
 df = pd.DataFrame(data)
