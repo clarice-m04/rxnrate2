@@ -25,7 +25,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Set of the backround
-set_background("./rxnratepic.jpg")
+set_background("./rxnrate.jpg")
 
 # Title of the page; definition of the nonlinear part:
 st.title("Welcome in non-linear reaction part")

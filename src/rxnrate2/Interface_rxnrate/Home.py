@@ -22,7 +22,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-set_background("rxnratepic.jpg")
+set_background("rxnrate.jpg")
 
 # Initialisation of the active page
 if "page" not in st.session_state:
