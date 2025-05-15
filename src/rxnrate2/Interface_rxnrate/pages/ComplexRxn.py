@@ -1,7 +1,7 @@
 import streamlit as st
 import numpy as np
+from rxnrate2.ODE_nonlinear import solve_reactions, plot_solution
 import matplotlib.pyplot as plt
-from rxnrate2.ODE_nonlinear import solve_reactions
 
 st.set_page_config(page_title="Chemical Reaction Simulator", layout="centered")
 
@@ -16,7 +16,7 @@ num_species = len(species)
 st.subheader("Initial Concentrations")
 initial_conc = []
 for s in species:
-    conc = st.number_input(f"[{s}]₀", min_value=0.0, value=1.0)
+    conc = st.number_input(f"[{s}]₀", min_value=0.0, value=1.0, key=f"conc_{s}")
     initial_conc.append(conc)
 
 # Reaction input
@@ -47,14 +47,10 @@ if st.button("Run Simulation"):
     try:
         sol = solve_reactions(species, reaction_list, initial_conc, t_span=(0, t_max), t_eval=t_eval)
 
-        st.subheader("Concentration vs Time")
-        fig, ax = plt.subplots()
-        for i, s in enumerate(species):
-            ax.plot(sol.t, sol.y[i], label=s)
-        ax.set_xlabel("Time")
-        ax.set_ylabel("Concentration")
-        ax.set_title("Species Concentrations Over Time")
-        ax.legend()
+        # Use your custom plot function
+        fig = plt.figure()
+        plot_solution(sol, species)
         st.pyplot(fig)
+
     except Exception as e:
         st.error(f"An error occurred: {e}")
