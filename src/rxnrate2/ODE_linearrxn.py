@@ -45,8 +45,10 @@ def plot_solution(sol, species, filename="reaction_plot.jpg"):
         plt.plot(sol.t, sol.y[i], label=s)
     plt.xlabel('Time', fontname='Times New Roman', fontsize=14)
     plt.ylabel('Concentration', fontname='Times New Roman', fontsize=14)
+    plt.xticks(fontname= 'Times New Roman')
+    plt.yticks(fontname= 'Times New Roman') 
     plt.title('Concentration over time of each species', fontname='Times New Roman', fontsize=14)
-    plt.legend()
+    plt.legend(prop={'family': 'Times New Roman'})
     #plt.show()
     #plt.grid(True)
     plt.tight_layout()  # Ensures labels aren't cut off

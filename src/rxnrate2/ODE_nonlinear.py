@@ -59,9 +59,11 @@ def plot_solution(sol, species):
     for i, s in enumerate(species):
         plt.plot(sol.t, sol.y[i], label=s)
     plt.xlabel('Time', fontname= 'Times New Roman')
-    plt.ylabel('Concentration')
-    plt.title('Species concentration over time')
-    plt.legend()
+    plt.ylabel('Concentration', fontname= 'Times New Roman')
+    plt.xticks(fontname= 'Times New Roman')
+    plt.yticks(fontname= 'Times New Roman')
+    plt.title('Species concentration over time', fontname= 'Times New Roman')
+    plt.legend(prop={'family': 'Times New Roman'})
     plt.show()
 
 
