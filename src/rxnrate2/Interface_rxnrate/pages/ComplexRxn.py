@@ -7,79 +7,10 @@ from rxnrate2.ODE_linearrxn import solve_reaction, plot_solution
 from rdkit import Chem
 from rdkit.Chem import Draw
 from PIL import Image, ImageDraw, ImageFont
+from rxnrate2.Interface_rxnrate.pages.SimpleRxn import get_smiles, draw_reaction
 
 
-
-### Definition of functions to draw the reactions using SMILES ###
-
-## Helper: fallback SMILESdef get_smiles(query):
-def get_smiles(query): 
-    fallback_smiles = {
-        'H2O': 'O',
-        'CO2': 'O=C=O',
-        'O2': 'O=O',
-        'H2': '[H][H]',
-        'N2': 'N#N',
-        'CH4': 'C',
-        'NH3': 'N',#
-    }
-    try:#
-        compound = pcp.get_compounds(query, 'name')
-        if compound:
-            return compound[0].isomeric_smiles
-    except:
-        pass
-    return fallback_smiles.get(query.strip(), None)
-
-## Helper: drawing function
-def draw_reaction(reagent_smiles, product_smiles, reagent_label, product_label, conc_reagent, conc_product, kf, kb):
-    # Try to use Times New Roman; fallback to default
-    try:
-        font = ImageFont.truetype("Times New Roman.ttf", 14)
-    except:
-        font = ImageFont.load_default()
-
-
-    mol1 = Chem.MolFromSmiles(reagent_smiles) if reagent_smiles else None
-    mol2 = Chem.MolFromSmiles(product_smiles) if product_smiles else None
-
-    if not mol1 or not mol2:
-        st.warning("Could not generate one or both molecule images.")
-        return None
-
-    img1 = Draw.MolToImage(mol1, size=(200, 200))
-    img2 = Draw.MolToImage(mol2, size=(200, 200))
-
-    canvas = Image.new('RGB', (500, 250), 'white')
-    draw = ImageDraw.Draw(canvas)
-
-    # Paste molecule images
-    canvas.paste(img1, (10, 10))
-    canvas.paste(img2, (290, 10))
-
-    # Draw double arrows
-    arrow_y = 100
-    draw.line((220, arrow_y - 10, 280, arrow_y - 10), fill='black', width=2)
-    draw.line((280, arrow_y + 10, 220, arrow_y + 10), fill='black', width=2)
-    draw.polygon([(275, arrow_y - 13), (285, arrow_y - 10), (275, arrow_y - 7)], fill='black')
-    draw.polygon([(225, arrow_y + 7), (215, arrow_y + 10), (225, arrow_y + 13)], fill='black')
-
-    # Decimal format for kinetic constants
-    draw.text((230, arrow_y - 30), f"kf = {kf:.2f}", fill='black', font=font)
-    draw.text((230, arrow_y + 15), f"kb = {kb:.2f}", fill='black', font=font)
-
-    # Labels and concentrations
-    draw.text((10, 210), f"{reagent_label}", fill='black', font=font)
-    draw.text((10, 225), f"[{reagent_label}]i = {conc_reagent:.2f}M", fill='black', font=font)
-
-    draw.text((290, 210), f"{product_label}", fill='black', font=font)
-    draw.text((290, 225), f"[{product_label}]i = {conc_product:.2f}M", fill='black', font=font)
-
-    return canvas
-
-
-
-### Define interactive page with buttons ###
+# Define interactive page with buttons, in the same way as the one made for linear
 
 ## Times new roman font
 st.markdown("""
@@ -97,7 +28,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 ## Title
-st.title("Welcome in linear reaction part")
+st.title("Welcome in nonlinear reaction part")
 
 ## Subtitle
 st.title("Chemical Reaction Collector")
@@ -117,17 +48,16 @@ if "species_list" not in st.session_state:
 if "reaction_tuples" not in st.session_state:
     st.session_state.reaction_tuples = []
 
-if st.session_state.get("last_action_message"):
-    st.success(st.session_state["last_action_message"])
-    if os.path.exists(st.session_state["new_image_to_show"]):
-        st.image(
-            st.session_state["new_image_to_show"],
-            caption="Reaction Rate Picture",
-            use_container_width=True
-        )
+#if st.session_state.get("last_action_message"):
+ #   st.success(st.session_state["last_action_message"])
+  #  if os.path.exists(st.session_state["new_image_to_show"]):
+   #     st.image(
+    #        st.session_state["new_image_to_show"],
+     #       caption="Reaction Rate Picture",
+      #      use_container_width=True)
     # Clear the message and image info so it's not shown again
-    del st.session_state["last_action_message"]
-    del st.session_state["new_image_to_show"]
+    #del st.session_state["last_action_message"]
+    #del st.session_state["new_image_to_show"]
 
 ## Form input
 col1, col2 = st.columns(2)
@@ -136,6 +66,15 @@ with col1:
 
     reagent = st.text_input("Reagent (Formula or Name, e.g. H2O)")
     init_conc_reagent = st.number_input("Initial concentration of Reagent", min_value=0.0, value=1.0, format="%.3f")
+
+
+    #for i in range(len(st.session_state.reactants)):
+     #   st.session_state.reactants[i] = st.text_input(f"Reactant {i+1}", key=f"reactant_{i}")
+    #kf = st.number_input("Forward Rate Constant (kf)", min_value=0.0, value=1.0, format="%.5f")
+
+    #if st.button("Add Reactant Field"):
+     #   st.session_state.reactants.append([])
+
 
     # Button to add the reagent and the associated concentration in two different lists; 
         #   one for the reagents and one for the concentration

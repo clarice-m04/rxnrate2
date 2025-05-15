@@ -1,7 +1,7 @@
 import streamlit as st
 import numpy as np
 import os
-from rxnrate2.ODE_nonlinear import solve_reactions, plot_solution  # Assuming you saved the nonlinear logic here
+from rxnrate2.ODE_nonlinear import solve_reactions, plot_solution  
 
 
 ## Times new roman font
@@ -20,7 +20,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Title and intro
-st.title("Nonlinear Reaction Simulator")
+st.title("Welcome in linear reaction part")
 st.markdown("Define nonlinear reactions with multiple reactants and products.")
 
 # Initialize session state
