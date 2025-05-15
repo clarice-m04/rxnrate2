@@ -6,7 +6,7 @@ import pandas as pd
 from rdkit import Chem
 from rdkit.Chem import Draw
 
-data = pd.read_csv('Data_projet.csv', sep = ";")
+data = pd.read_csv( "git/rxnrate2/src/rxnrate2/database/Data_projet.csv", sep = ";")
 df = pd.DataFrame(data)
 
 # Check if your reactants are in the database
@@ -28,10 +28,10 @@ def check(smiles1: str, smiles2: str) -> bool | int:
                 return True, int(''.join(map(str, common_index)))
             else:
                 print("There are multiple reactions corresponding to your research, please be more precise.")
-                return False
+                return False, 0
         else:
             print("Reactant 1 is in our database, but there is no reaction with reactant 2 found.")
-            return False
+            return False, 0
             
     elif smiles1 in df['smiles r2'].values :
         index3 = []
@@ -41,7 +41,7 @@ def check(smiles1: str, smiles2: str) -> bool | int:
         if smiles2 in df['smiles r1'].values:
             index4 = []
             for d in range(0, len(df), 1):
-                if df.loc[d, 'smiles r2'] == smiles2:
+                if df.loc[d, 'smiles r1'] == smiles2:
                     index4.append(d)
             common_index_bis = list(set(index3) & set(index4))
             if len(common_index_bis) == 1:
@@ -49,14 +49,14 @@ def check(smiles1: str, smiles2: str) -> bool | int:
                 return True, int(''.join(map(str, common_index_bis)))
             else:
                 print("There are multiple reactions corresponding to your research, please be more precise.")
-                return False
+                return False, 0
         else:
             print("Reactant 2 is not present in this database.")
-            return False
+            return False, 0
 
     else:
         print("Sorry, the reaction you are looking for in not available in our database.")
-        return False
+        return False, 0
 
 # Calculate k at the chosen temperature
 
@@ -110,8 +110,8 @@ if drawing1 and drawing2 :
     
     if is_ok[0] == True:
         temperature = float(input('Please enter the temperature of the reaction you will perform in [°C]: '))
-        if temperature < 273. :
+        if temperature < 273 :
             temperature += 273     # Conversion en Kelvin si la temperature a bien été donnée en °C (supposant que peu de réaction vont avoir lieu à plus de 273 °C)
 
         value_k_corrected = calc_temperature(temperature, df.loc[is_ok[1], 'E'], df.loc[is_ok[1], 'Arrhenius factor'])
-        print(round(value_k_corrected, 20) * (10**-3), "L/(mol s)")
+        print("%.2E" %value_k_corrected, "L/(mol s)")
