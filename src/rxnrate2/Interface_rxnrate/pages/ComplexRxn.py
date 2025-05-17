@@ -1,15 +1,14 @@
 import streamlit as st
 import numpy as np
 import pubchempy as pcp
-import rdkit as rd
 
-st.set_page_config(page_title="Chemical Reaction Simulator", layout="centered")
+st.set_page_config(page_title="Chemical Complex Reaction Simulator", layout="centered")
 
 from rdkit import Chem
 from rdkit.Chem import Draw
 import matplotlib.pyplot as plt
-from rxnrate2.ODE_nonlinear import solve_reactions, plot_solution
-from rxnrate2.Interface_rxnrate.pages.SimpleRxn import get_smiles
+from ODE_nonlinear import solve_reactions, plot_solution
+from SimpleRxn import get_smiles
 from PIL import Image, ImageDraw, ImageFont
 
 st.title("Nonlinear Chemical Reaction Simulator")
@@ -44,11 +43,6 @@ for i in range(num_reactions):
 
         reaction_list.append((reactants, products, kf, kr_val))
 
-if reactants and products:
-    for reactant in reactants:
-        reagent_smile = get_smiles(reactant)
-    for product in products:
-        product_smile = get_smiles(product)
 
 def rxn_diagram(reagent_smiles, product_smiles):
     # Try to use Times New Roman; fallback to default
@@ -89,8 +83,12 @@ def rxn_diagram(reagent_smiles, product_smiles):
 
     return canvas
 
-
-rxn_diagram(reagent_smile, product_smile)
+if reactants and products:
+    for reactant in reactants:
+        for product in products:
+            reagent_smile = Chem.MolToSmiles(reactant)
+            product_smile = Chem.MolToSmiles(product)
+            rxn_diagram(reagent_smile, product_smile)
 
 # Simulation time
 st.subheader("Simulation Time")
