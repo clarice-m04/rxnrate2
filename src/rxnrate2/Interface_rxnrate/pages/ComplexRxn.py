@@ -44,53 +44,90 @@ for i in range(num_reactions):
 
         reaction_list.append((reactants, products, kf, kr_val))
 
-if reactants and products:
-    for reactant in reactants:
-        reagent_smile = get_smiles(reactant)
-    for product in products:
-        product_smile = get_smiles(product)
 
-def rxn_diagram(reagent_smiles, product_smiles):
-    # Try to use Times New Roman; fallback to default
+def rxn_diagram_multi(reagent_smiles_list, product_smiles_list):
     try:
-        font = ImageFont.truetype("Times New Roman.ttf", 14)
+        font = ImageFont.truetype("Times New Roman.ttf", 18)
     except:
         font = ImageFont.load_default()
 
+    # Convert SMILES to RDKit molecules
+    reagent_mols = [Chem.MolFromSmiles(smi) for smi in reagent_smiles_list if smi]
+    product_mols = [Chem.MolFromSmiles(smi) for smi in product_smiles_list if smi]
 
-    mol1 = Chem.MolFromSmiles(reagent_smiles) if reagent_smiles else None
-    mol2 = Chem.MolFromSmiles(product_smiles) if product_smiles else None
+    reagent_mols = [mol for mol in reagent_mols if mol]
+    product_mols = [mol for mol in product_mols if mol]
 
-    if not mol1 or not mol2:
-        st.warning("Could not generate one or both molecule images.")
+    if not reagent_mols or not product_mols:
+        st.warning("Could not generate one or more molecule images.")
         return None
 
-    img1 = Draw.MolToImage(mol1, size=(200, 200))
-    img2 = Draw.MolToImage(mol2, size=(200, 200))
+    mol_size = (150, 150)
+    plus_width = 20
+    arrow_space = 60
+    spacing = 10
 
-    canvas = Image.new('RGB', (500, 250), 'white')
+    # Create images for molecules
+    reactant_imgs = [Draw.MolToImage(mol, size=mol_size) for mol in reactant_mols]
+    product_imgs = [Draw.MolToImage(mol, size=mol_size) for mol in product_mols]
+
+    # Total width calculation
+    num_reactants = len(reactant_imgs)
+    num_products = len(product_imgs)
+
+    reactant_width = num_reactants * mol_size[0] + (num_reactants - 1) * plus_width
+    product_width = num_products * mol_size[0] + (num_products - 1) * plus_width
+    total_width = reactant_width + product_width + arrow_space + 4 * spacing
+    canvas_height = mol_size[1] + 40
+
+    canvas = Image.new("RGB", (total_width, canvas_height), "white")
     draw = ImageDraw.Draw(canvas)
 
-    # Paste molecule images
-    canvas.paste(img1, (10, 10))
-    canvas.paste(img2, (290, 10))
+    # Draw reactants with plus signs
+    x_offset = spacing
+    for i, img in enumerate(reactant_imgs):
+        canvas.paste(img, (x_offset, 20))
+        x_offset += mol_size[0]
+        if i < num_reactants - 1:
+            draw.text((x_offset + 5, canvas_height // 2 - 10), "+", fill="black", font=font)
+            x_offset += plus_width
 
-    # Draw double arrows
-    arrow_y = 100
-    draw.line((220, arrow_y - 10, 280, arrow_y - 10), fill='black', width=2)
-    draw.line((280, arrow_y + 10, 220, arrow_y + 10), fill='black', width=2)
-    draw.polygon([(275, arrow_y - 13), (285, arrow_y - 10), (275, arrow_y - 7)], fill='black')
-    draw.polygon([(225, arrow_y + 7), (215, arrow_y + 10), (225, arrow_y + 13)], fill='black')
+    # Draw reaction arrow
+    arrow_x_start = x_offset + spacing
+    arrow_x_end = arrow_x_start + arrow_space - 10
+    arrow_y = canvas_height // 2
+    draw.line((arrow_x_start, arrow_y, arrow_x_end, arrow_y), fill="black", width=3)
+    draw.polygon([
+        (arrow_x_end, arrow_y),
+        (arrow_x_end - 10, arrow_y - 5),
+        (arrow_x_end - 10, arrow_y + 5)
+    ], fill="black")
+    x_offset = arrow_x_end + spacing
 
-    # Labels and concentrations
-    #draw.text((10, 210), f"{reagent_labels}", fill='black', font=font)
-    #draw.text((290, 210), f"{product_labels}", fill='black', font=font)
- 
+    # Draw products with plus signs
+    for i, img in enumerate(product_imgs):
+        canvas.paste(img, (x_offset, 20))
+        x_offset += mol_size[0]
+        if i < num_products - 1:
+            draw.text((x_offset + 5, canvas_height // 2 - 10), "+", fill="black", font=font)
+            x_offset += plus_width
 
     return canvas
 
+if reactants and products:
+    reagents_smiles_list = []
+    products_smiles_list = []
 
-rxn_diagram(reagent_smile, product_smile)
+    for reactant in reactants:
+        reagent_smile = get_smiles(reactant)
+        reagents_smiles_list.append(reagent_smile)
+    for product in products:
+        product_smile = get_smiles(product)
+        products_smiles_list.append(product)
+    st.write(f"The reagents smiles are: {reagents_smiles_list}")
+    st.write(f"The products smiles are: {products_smiles_list}")
+
+    rxn_diagram_multi(reagents_smiles_list, products_smiles_list)
 
 # Simulation time
 st.subheader("Simulation Time")
