@@ -1,14 +1,21 @@
 import streamlit as st
 import numpy as np
-from rxnrate2.ODE_nonlinear import solve_reactions, plot_solution
-import matplotlib.pyplot as plt
+import pubchempy as pcp
+import rdkit as rd
 
 st.set_page_config(page_title="Chemical Reaction Simulator", layout="centered")
 
+from rdkit import Chem
+from rdkit.Chem import Draw
+import matplotlib.pyplot as plt
+from rxnrate2.ODE_nonlinear import solve_reactions, plot_solution
+from rxnrate2.Interface_rxnrate.pages.SimpleRxn import get_smiles
+from PIL import Image, ImageDraw, ImageFont
+
 st.title("Nonlinear Chemical Reaction Simulator")
 
-# Species input
-species_input = st.text_input("Enter species (comma-separated)", "A, B, C, D")
+# Species input (reagnts and products)
+species_input = st.text_input("Enter species (comma-separated)", "H2, O2, H2O")
 species = [s.strip() for s in species_input.split(",") if s.strip()]
 num_species = len(species)
 
@@ -36,6 +43,54 @@ for i in range(num_reactions):
         kr_val = kr if kr > 0 else None
 
         reaction_list.append((reactants, products, kf, kr_val))
+
+if reactants and products:
+    for reactant in reactants:
+        reagent_smile = get_smiles(reactant)
+    for product in products:
+        product_smile = get_smiles(product)
+
+def rxn_diagram(reagent_smiles, product_smiles):
+    # Try to use Times New Roman; fallback to default
+    try:
+        font = ImageFont.truetype("Times New Roman.ttf", 14)
+    except:
+        font = ImageFont.load_default()
+
+
+    mol1 = Chem.MolFromSmiles(reagent_smiles) if reagent_smiles else None
+    mol2 = Chem.MolFromSmiles(product_smiles) if product_smiles else None
+
+    if not mol1 or not mol2:
+        st.warning("Could not generate one or both molecule images.")
+        return None
+
+    img1 = Draw.MolToImage(mol1, size=(200, 200))
+    img2 = Draw.MolToImage(mol2, size=(200, 200))
+
+    canvas = Image.new('RGB', (500, 250), 'white')
+    draw = ImageDraw.Draw(canvas)
+
+    # Paste molecule images
+    canvas.paste(img1, (10, 10))
+    canvas.paste(img2, (290, 10))
+
+    # Draw double arrows
+    arrow_y = 100
+    draw.line((220, arrow_y - 10, 280, arrow_y - 10), fill='black', width=2)
+    draw.line((280, arrow_y + 10, 220, arrow_y + 10), fill='black', width=2)
+    draw.polygon([(275, arrow_y - 13), (285, arrow_y - 10), (275, arrow_y - 7)], fill='black')
+    draw.polygon([(225, arrow_y + 7), (215, arrow_y + 10), (225, arrow_y + 13)], fill='black')
+
+    # Labels and concentrations
+    #draw.text((10, 210), f"{reagent_labels}", fill='black', font=font)
+    #draw.text((290, 210), f"{product_labels}", fill='black', font=font)
+ 
+
+    return canvas
+
+
+rxn_diagram(reagent_smile, product_smile)
 
 # Simulation time
 st.subheader("Simulation Time")
