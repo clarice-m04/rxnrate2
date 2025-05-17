@@ -7,8 +7,8 @@ st.set_page_config(page_title="Chemical Complex Reaction Simulator", layout="cen
 from rdkit import Chem
 from rdkit.Chem import Draw
 import matplotlib.pyplot as plt
-from ODE_nonlinear import solve_reactions, plot_solution
-from SimpleRxn import get_smiles
+from .ODE_nonlinear import solve_reactions, plot_solution
+from .SimpleRxn import get_smiles
 from PIL import Image, ImageDraw, ImageFont
 
 st.title("Nonlinear Chemical Reaction Simulator")
