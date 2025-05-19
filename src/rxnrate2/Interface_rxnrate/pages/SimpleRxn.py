@@ -5,6 +5,7 @@ import pubchempy as pcp
 import base64
 
 from rxnrate2.ODE_linearrxn import solve_reaction, plot_solution
+from rxnrate2.Interface_rxnrate.functions import set_background
 from rdkit import Chem
 from rdkit.Chem import Draw
 from PIL import Image, ImageDraw, ImageFont
@@ -19,9 +20,8 @@ def get_smiles(query):
         compound = pcp.get_compounds(query, "name")
         if compound:
             return compound[0].canonical_smiles
-    except:
-        pass
-    return fallback_smiles.get(query.strip(), None)
+    except Exception as error:  # other error
+        print(f"An Error occured: {error}")
 
 
 ## Helper: drawing function
@@ -33,8 +33,7 @@ def draw_reaction(
     conc_reagent,
     conc_product,
     kf,
-    kb,
-):
+    kb,):
     # Try to use Times New Roman; fallback to default
     try:
         font = ImageFont.truetype("Times New Roman.ttf", 14)
@@ -88,6 +87,8 @@ def draw_reaction(
 
 
 ### Define interactive page with buttons ###
+
+set_background("rxnrate.jpg")
 
 ## Times new roman font
 st.markdown(
@@ -304,18 +305,20 @@ for idx, rxn in enumerate(st.session_state.reactions):
 
 ## Show graph
 st.header("Concentration plot")
-if st.session_state.get("last_action_message"):
-    st.success(st.session_state["last_action_message"])
-    if os.path.exists(st.session_state["new_image_to_show"]):
-        st.image(
-            st.session_state["new_image_to_show"],
-            caption="Reaction Rate Picture",
-            use_container_width=True,
-        )
 
-    # Clear the message and image info so it's not shown again
-    del st.session_state["last_action_message"]
-    del st.session_state["new_image_to_show"]
-else:
-    filename = f"./figures/{st.session_state.reaction_tuples}.jpg"
-    st.image(filename, caption="Reaction Rate Picture", use_container_width=True)
+if st.session_state.reactions != []:
+    if st.session_state.get("last_action_message"):
+        st.success(st.session_state["last_action_message"])
+        if os.path.exists(st.session_state["new_image_to_show"]):
+            st.image(
+                st.session_state["new_image_to_show"],
+                caption="Reaction Rate Picture",
+                use_container_width=True,
+            )
+
+        # Clear the message and image info so it's not shown again
+        del st.session_state["last_action_message"]
+        del st.session_state["new_image_to_show"]
+    else:
+        filename = f"./figures/{st.session_state.reaction_tuples}.jpg"
+        st.image(filename, caption="Reaction Rate Picture", use_container_width=True)
