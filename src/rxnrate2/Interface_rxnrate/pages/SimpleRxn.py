@@ -14,16 +14,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 ## Helper: fallback SMILESdef get_smiles(query):
 def get_smiles(query): 
-    fallback_smiles = {
-        'H2O': 'O',
-        'CO2': 'O=C=O',
-        'O2': 'O=O',
-        'H2': '[H][H]',
-        'N2': 'N#N',
-        'CH4': 'C',
-        'NH3': 'N',#
-    }
-    try:#
+    try:
         compound = pcp.get_compounds(query, 'name')
         if compound:
             return compound[0].canonical_smiles
@@ -120,11 +111,15 @@ if "reaction_tuples" not in st.session_state:
 if st.session_state.get("last_action_message"):
     st.success(st.session_state["last_action_message"])
     if os.path.exists(st.session_state["new_image_to_show"]):
-        st.image(
-            st.session_state["new_image_to_show"],
-            caption="Reaction Rate Picture",
-            use_container_width=True
-        )
+        st.markdown(
+             """
+                <div style="position: fixed; bottom: 10px; left: 0; width: 100%; text-align: center;">
+                 <img src="new_image_to_show" alt="Reaction Rate Picture" style="height:100px;">
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+        
     # Clear the message and image info so it's not shown again
     del st.session_state["last_action_message"]
     del st.session_state["new_image_to_show"]
@@ -140,6 +135,7 @@ with col2:
     product = st.text_input("Product (Formula or Name, e.g. CO2)")
     k_backward = st.number_input("k_backward", min_value=0.0, value=0.5, format="%.6f")
     init_conc_product = st.number_input("Initial concentration of Product", min_value=0.0, value=0.0, format="%.3f")
+
 
 ## Submit button
 if st.button("Add Reaction"):
@@ -194,7 +190,7 @@ if st.button("Add Reaction"):
             print(f"An Error occured: {error}")
         
         # The file is named avec the reagents and the products
-        filename = f"./figures/{','.join(st.session_state.reagents)}_to_{','.join(st.session_state.products)}.jpg"
+        filename = f"./figures/{st.session_state.reaction_tuples}.jpg"
         
         # Solve reaction rate equations to compute concentrations
         s,m = solve_reaction(st.session_state.species_list, st.session_state.reaction_tuples, i_conc_list)
@@ -211,7 +207,7 @@ if st.button("Remove Last Reaction"):
     if st.session_state.reactions:
 
         #Remove last plot from the file
-        filename = f"./figures/{','.join(st.session_state.reagents)}_to_{','.join(st.session_state.products)}.jpg"
+        filename = f"./figures/{st.session_state.reaction_tuples}.jpg"
         os.remove(filename)
 
         # Remove the last elements
@@ -251,7 +247,7 @@ if st.button("Remove Last Reaction"):
         #st.image(filename, caption="Reaction Rate Picture", use_container_width=True)
 
         # Save new image filename to display later
-        new_filename = f"./figures/{','.join(st.session_state.reagents)}_to_{','.join(st.session_state.products)}.jpg"
+        new_filename = f"./figures/{st.session_state.reaction_tuples}.jpg"
         st.session_state["last_action_message"] = "✅ Last reaction removed."
         st.session_state["new_image_to_show"] = new_filename
 
