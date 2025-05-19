@@ -2,6 +2,7 @@ import streamlit as st
 import sys
 import os
 import pubchempy as pcp
+import base64
 
 from rxnrate2.ODE_linearrxn import solve_reaction, plot_solution
 from rdkit import Chem
@@ -178,6 +179,7 @@ if st.button("Add Reaction"):
             st.success(f"Added reaction: {reagent} ⇌ {product}")
         else:
             st.error("Could not resolve SMILES for reagent or product.")
+
     if st.session_state.reactions:
         i_conc_list = list(st.session_state.init_conc.values())
 
@@ -197,7 +199,20 @@ if st.button("Add Reaction"):
         plot_solution(s,st.session_state.species_list, filename=filename)
         
         # Display plot of concentrations that has been computed
-        st.image(filename, caption="Reaction Rate Picture", use_container_width=True)
+        #st.image(filename, caption="Reaction Rate Picture", use_container_width=True)
+        # Read and encode the image
+        with open(filename, "rb") as img_file:
+            b64_image = base64.b64encode(img_file.read()).decode()
+
+        # Embed with HTML
+        st.markdown(
+          f"""
+          <div style="position: fixed; bottom: 10px; left: 0; width: 100%; text-align: center;">
+              <img src="data:image/png;base64,{b64_image}" alt="Bottom Image" style="height:100px;">
+          </div>
+         """,
+          unsafe_allow_html=True
+        )
 
     else:
         st.error("Please enter both reagent and product.")
