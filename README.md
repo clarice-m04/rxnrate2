@@ -99,6 +99,15 @@ t_span = (0, 10)
 sol = rxn.solve(y0, t_span)
 rxn.plot_solution(sol)
 ```
+### Streamlit Interface
+To explore the interactive interface, you can launch the **Streamlit GUI** in the following way:
+
+From VS Code or Terminal:
+Navigate to the root of your project (where the `src/` folder lives) and run:
+
+```bash
+streamlit run src/rxnrate2/Interface_rxnrate/Home.py
+```
 
 ## :hammer: Installation
 
