@@ -112,14 +112,11 @@ if "reaction_tuples" not in st.session_state:
 if st.session_state.get("last_action_message"):
     st.success(st.session_state["last_action_message"])
     if os.path.exists(st.session_state["new_image_to_show"]):
-        st.markdown(
-             """
-                <div style="position: fixed; bottom: 10px; left: 0; width: 100%; text-align: center;">
-                 <img src="new_image_to_show" alt="Reaction Rate Picture" style="height:100px;">
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
+        st.image(
+            st.session_state["new_image_to_show"],
+            caption="Reaction Rate Picture",
+            use_container_width=True
+        )
         
     # Clear the message and image info so it's not shown again
     del st.session_state["last_action_message"]
@@ -199,20 +196,7 @@ if st.button("Add Reaction"):
         plot_solution(s,st.session_state.species_list, filename=filename)
         
         # Display plot of concentrations that has been computed
-        #st.image(filename, caption="Reaction Rate Picture", use_container_width=True)
-        # Read and encode the image
-        with open(filename, "rb") as img_file:
-            b64_image = base64.b64encode(img_file.read()).decode()
-
-        # Embed with HTML
-        st.markdown(
-          f"""
-          <div style="position: fixed; bottom: 10px; left: 0; width: 100%; text-align: center;">
-              <img src="data:image/png;base64,{b64_image}" alt="Bottom Image" style="height:100px;">
-          </div>
-         """,
-          unsafe_allow_html=True
-        )
+        st.image(filename, caption="Reaction Rate Picture", use_container_width=True)
 
     else:
         st.error("Please enter both reagent and product.")
