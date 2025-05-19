@@ -32,12 +32,32 @@ It is designed to support:
 
 ## :paintbrush: Features
 
-**rxnrate2** enables you to:
 
-- 📈 Model **first-order linear reactions** using matrix-based ODEs.
-- 🔁 Simulate **nonlinear mass-action systems** with reversible reactions.
-- 📊 Visualize concentration profiles over time with graphs.
-- 💡 Interact with reactions using a built-in **Streamlit GUI**.
+**rxnrate2** provides a flexible and intuitive framework for simulating chemical reaction dynamics.
+
+### 🔹 First-Order Linear Reactions
+- Define reaction systems where the rate of change of each species is a linear combination of others.
+- Uses matrix exponentials or `solve_ivp` with a coefficient matrix for efficient time evolution.
+- Suitable for systems like radioactive decay chains, unimolecular reactions, and sequential steps.
+
+### 🔹 Nonlinear Mass-Action Kinetics
+- Supports arbitrary reaction networks with any number of species and reactions.
+- Handles complex stoichiometries and reversible reactions (e.g., `2A + B ⇌ C + D`).
+- Rates computed via mass-action laws: forward and backward rates depend on instantaneous concentrations.
+
+### 📉 Concentration Profile Plotting
+- Built-in matplotlib-based visualization of species concentrations over time.
+- Supports both linear and nonlinear simulations.
+- Automatically assigns colors and handles legends for clarity.
+
+### 🧪 Streamlit GUI for Interactive Exploration
+- Launch an intuitive web app to:
+  - Define reactions with species and rate constants.
+  - Set initial concentrations and time span.
+  - Visualize concentration dynamics instantly.
+  - Viszalize the reaction with the help of diagramms showing the molecules.
+- Ideal for demos, teaching, or quick testing of reaction models without coding.
+
 
 ### Example Reaction Types Supported
 
