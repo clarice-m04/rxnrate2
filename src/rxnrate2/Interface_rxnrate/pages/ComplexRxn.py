@@ -55,8 +55,9 @@ def get_smiles(query):
 
 
 # Check if your reactants are in the database
+path_database = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),"database/Data_projet.csv")
 
-data = pd.read_csv('rxnrate2/src/rxnrate2/Interface_rxnrate/pages/Data_projet.csv', sep = ";")
+data = pd.read_csv(path_database, sep = ";")
 df = pd.DataFrame(data)
 
 def check(reactant1, reactant2) -> bool | int:
@@ -276,9 +277,9 @@ for i in range(num_reactions):
             is_in_data = check(reactants[0], reactants[1])
             print(is_in_data)
             if is_in_data[0] == True:
-                kf_calc = calc_temperature(temperature_reaction, df.loc[is_in_data[1], 'E'], df.loc[is_in_data[1], 'Arrhenius factor'])
-                kf = "%.2E" %kf_calc
-                st.write(f"The value of kf was found using the database, kf = {kf}")
+                kf = calc_temperature(temperature_reaction, df.loc[is_in_data[1], 'E'], df.loc[is_in_data[1], 'Arrhenius factor'])
+                kf_write = "%.2E" %kf
+                st.write(f"The value of kf was found using the database, kf = {kf_write}")
             else:
                 kf = st.number_input(f"Forward rate constant kf - Reaction{i+1}", min_value=0.0, value=1.0, format="%.3f", key=f"kf_{i}")
                 st.warning("No reaction found")
