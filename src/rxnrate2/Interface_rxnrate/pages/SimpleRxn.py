@@ -23,7 +23,6 @@ def get_smiles(query):
         pass
     return fallback_smiles.get(query.strip(), None)
 
-
 ## Helper: drawing function
 def draw_reaction(
     reagent_smiles,
@@ -33,8 +32,7 @@ def draw_reaction(
     conc_reagent,
     conc_product,
     kf,
-    kb,
-):
+    kb,):
     # Try to use Times New Roman; fallback to default
     try:
         font = ImageFont.truetype("Times New Roman.ttf", 14)
@@ -304,18 +302,20 @@ for idx, rxn in enumerate(st.session_state.reactions):
 
 ## Show graph
 st.header("Concentration plot")
-if st.session_state.get("last_action_message"):
-    st.success(st.session_state["last_action_message"])
-    if os.path.exists(st.session_state["new_image_to_show"]):
-        st.image(
-            st.session_state["new_image_to_show"],
-            caption="Reaction Rate Picture",
-            use_container_width=True,
-        )
 
-    # Clear the message and image info so it's not shown again
-    del st.session_state["last_action_message"]
-    del st.session_state["new_image_to_show"]
-else:
-    filename = f"./figures/{st.session_state.reaction_tuples}.jpg"
-    st.image(filename, caption="Reaction Rate Picture", use_container_width=True)
+if st.session_state.reactions != []:
+    if st.session_state.get("last_action_message"):
+        st.success(st.session_state["last_action_message"])
+        if os.path.exists(st.session_state["new_image_to_show"]):
+            st.image(
+                st.session_state["new_image_to_show"],
+                caption="Reaction Rate Picture",
+                use_container_width=True,
+            )
+
+        # Clear the message and image info so it's not shown again
+        del st.session_state["last_action_message"]
+        del st.session_state["new_image_to_show"]
+    else:
+        filename = f"./figures/{st.session_state.reaction_tuples}.jpg"
+        st.image(filename, caption="Reaction Rate Picture", use_container_width=True)
