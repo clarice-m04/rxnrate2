@@ -85,17 +85,17 @@ rxn.plot_solution(sol)
 Create and activate a new environment:
 
 ```bash
-conda create -n rxnrate2 python=3.10
+conda env create -f environment.yml
 conda activate rxnrate2
 ```
 
 Install the package:
 
 ```bash
-pip install .
+pip install -e .
 ```
 
-To use the Streamlit GUI, also install:
+To use the Streamlit GUI, ensure you have Streamlit installed (already included in the `environment.yml`, but in case you need to reinstall):
 
 ```bash
 pip install streamlit
