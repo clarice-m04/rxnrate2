@@ -57,7 +57,7 @@ It is designed to support:
   - Define reactions with species and rate constants.
   - Set initial concentrations and time span.
   - Visualize concentration dynamics instantly.
-  - Viszalize the reaction with the help of diagramms showing the molecules.
+  - Visualize the reaction with the help of diagramms showing the molecules.
 - Ideal for demos, teaching, or quick testing of reaction models without coding.
 
 
