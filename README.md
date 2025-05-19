@@ -127,13 +127,13 @@ conda activate rxnrate2
 Install the package:
 
 ```bash
-pip install -e .
+(rxnrate2) pip install -e .
 ```
 
 To use the Streamlit GUI, ensure you have Streamlit installed (already included in the `environment.yml`, but in case you need to reinstall):
 
 ```bash
-pip install streamlit
+(rxnrate2) pip install streamlit
 ```
 
 ## :hammer: Development Installation
@@ -143,7 +143,7 @@ Set up the repo locally:
 ```bash
 git clone https://github.com/clarice-m04/rxnrate2.git
 cd rxnrate2
-pip install -e ".[test,doc]"
+(rxnrate2) pip install -e ".[test,doc]"
 ```
 
 To initialize git and push (only if starting from scratch):
