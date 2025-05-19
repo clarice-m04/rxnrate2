@@ -1,7 +1,6 @@
 import streamlit as st
 import numpy as np
 import pubchempy as pcp
-import ODE_nonlinear
 
 st.set_page_config(page_title="Chemical Reaction Simulator", layout="centered")
 
@@ -20,7 +19,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-from ODE_nonlinear import plot_solution, solve_reactions
+from rxnrate2.ODE_nonlinear import plot_solution, solve_reactions
 from rdkit import Chem
 from rdkit.Chem import Draw
 import matplotlib.pyplot as plt
