@@ -5,7 +5,7 @@ import pubchempy as pcp
 import base64
 
 from rxnrate2.ODE_linearrxn import solve_reaction, plot_solution
-from rxnrate2.Interface_rxnrate.functions import set_background
+from rxnrate2.Interface_rxnrate.__init__ import set_background
 from rdkit import Chem
 from rdkit.Chem import Draw
 from PIL import Image, ImageDraw, ImageFont

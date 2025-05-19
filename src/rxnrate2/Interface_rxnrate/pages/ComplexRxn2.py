@@ -24,7 +24,7 @@ from rdkit import Chem
 from rdkit.Chem import Draw
 import matplotlib.pyplot as plt
 from PIL import Image, ImageDraw, ImageFont
-from rxnrate2.Interface_rxnrate.functions import set_background
+from rxnrate2.Interface_rxnrate.__init__ import set_background
 
 set_background("rxnrate.jpg")
 
@@ -53,9 +53,9 @@ def get_smiles(query):
 
 def rxn_diagram_multi(reagents_list, products_list, kf, kb):
     try:
-        font_txt = ImageFont.truetype("Times New Roman.ttf", 18)
+        font = ImageFont.truetype("Times New Roman.ttf", 18)
     except:
-        font_txt = ImageFont.load_default()
+        font = ImageFont.load_default()
 
     # Create new lists with the canonical smiles of reactants and products
     reagents_smiles_list: list = []

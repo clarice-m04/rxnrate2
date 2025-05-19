@@ -1,7 +1,7 @@
 import streamlit as st
 import base64
 from pathlib import Path
-from rxnrate2.Interface_rxnrate.functions import set_background
+from rxnrate2.Interface_rxnrate.__init__ import set_background
 
 
 #from rxnrate2.Interface_rxnrate.pages import SimpleRxn, ComplexRxn
@@ -30,7 +30,7 @@ if "page" not in st.session_state:
     st.session_state.page = "home"
 
 def home_page():
-    st.header("Welcome to RxnRate!📈✨")
+    st.title("Welcome to RxnRate!📈✨")
     st.subheader("Are you curious to see how your reaction advances ?")
     st.write("This program provides you the progression of your reaction over time")
     st.write("Now let's see what kind of reaction you have! " \
@@ -49,11 +49,11 @@ with col1:
     st.subheader("**Main characteristics:**")
     st.write("- Reaction of type A -> B -> C")
     st.write("- One reactant gives one product")
-    st.page_link("pages/SimpleRxn.py", label="Simple reaction", icon="1️⃣")
+    st.page_link("pages/SimpleRxn.py", label="Simple reaction (linear)", icon="1️⃣")
 
 with col2:
     st.subheader("**Main characteristics:**")
     st.write("- Reaction of type A + B -> C")
-    st.write("- Two or more reactants give one product")
-    st.page_link("pages/ComplexRxn2.py", label="More complex reaction", icon="2️⃣")
+    st.write("- Two or more reactants give one or more products")
+    st.page_link("pages/ComplexRxn2.py", label="Complex reaction (nonlinear)", icon="2️⃣")
     
