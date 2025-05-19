@@ -66,5 +66,16 @@ def plot_solution_nl(sol, species):
     plt.legend(prop={'family': 'Times New Roman'})
     plt.show()
 
-
-
+def plot_solution_nl_save(sol, species, filename):
+    """plots each species' concentration over time"""
+    for i, s in enumerate(species):
+        plt.plot(sol.t, sol.y[i], label=s)
+    plt.xlabel('Time', fontname= 'Times New Roman')
+    plt.ylabel('Concentration', fontname= 'Times New Roman')
+    plt.xticks(fontname= 'Times New Roman')
+    plt.yticks(fontname= 'Times New Roman')
+    plt.title('Species concentration over time', fontname= 'Times New Roman')
+    plt.legend(prop={'family': 'Times New Roman'})
+    plt.show()
+    plt.tight_layout()  # Ensures labels aren't cut off
+    plt.savefig(filename, dpi=300)
