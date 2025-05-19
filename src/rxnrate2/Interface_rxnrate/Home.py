@@ -55,5 +55,5 @@ with col2:
     st.subheader("**Main characteristics:**")
     st.write("- Reaction of type A + B -> C")
     st.write("- Two or more reactants give one or more products")
-    st.page_link("pages/ComplexRxn2.py", label="Complex reaction (nonlinear)", icon="2️⃣")
+    st.page_link("pages/ComplexRxn.py", label="Complex reaction (nonlinear)", icon="2️⃣")
     

@@ -1,21 +1,186 @@
 import streamlit as st
 import numpy as np
 import pubchempy as pcp
-import rdkit as rd
 
 st.set_page_config(page_title="Chemical Reaction Simulator", layout="centered")
 
+## Times new roman font
+st.markdown("""
+    <style>
+    * {
+        font-family: 'Times New Roman', Times, serif !important;
+    }
+    html, body, [class*="css"] {
+        font-family: 'Times New Roman', Times, serif !important;
+    }
+    .stText, .stMarkdown, .stDataFrame, .stTable, .stButton, .stHeader, .stSubheader, .stCaption {
+        font-family: 'Times New Roman', Times, serif !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+from rxnrate2.ODE_nonlinear import plot_solution_nl, solve_reactions
 from rdkit import Chem
 from rdkit.Chem import Draw
 import matplotlib.pyplot as plt
-from rxnrate2.ODE_nonlinear import solve_reactions, plot_solution_nl
-from rxnrate2.Interface_rxnrate.pages.SimpleRxn import get_smiles
 from PIL import Image, ImageDraw, ImageFont
+from rxnrate2.Interface_rxnrate.__init__ import set_background
+
+set_background("rxnrate.jpg")
 
 st.title("Nonlinear Chemical Reaction Simulator")
 
-# Species input (reagnts and products)
-species_input = st.text_input("Enter species (comma-separated)", "H2, O2, H2O")
+######################################### Functions #################################################
+
+def get_smiles(query): 
+    fallback_smiles = {
+        'H2O': 'O',
+        'CO2': 'O=C=O',
+        'O2': 'O=O',
+        'H2': '[H][H]',
+        'N2': 'N#N',
+        'CH4': 'C',
+        'NH3': 'N',#
+    }
+    try:#
+        compound = pcp.get_compounds(query, 'name')
+        if compound:
+            return compound[0].canonical_smiles
+    except:
+        pass
+    return fallback_smiles.get(query.strip(), None)
+
+
+def rxn_diagram_multi(reagents_list, products_list, kf, kb):
+    try:
+        font = ImageFont.truetype("Times New Roman.ttf", 18)
+    except:
+        font = ImageFont.load_default()
+
+    # Create new lists with the canonical smiles of reactants and products
+    reagents_smiles_list: list = []
+    products_smiles_list: list = []
+
+    for r in reagents_list:
+        reagents_smiles_list.append(get_smiles(r))
+    for p in products_list:
+        products_smiles_list.append(get_smiles(p))
+
+
+    # Convert SMILES to RDKit Molecules
+
+    reagents_molecule_list = []
+    products_molecule_list = []
+
+    for r_smile in reagents_smiles_list:
+        reagents_molecule_list.append(Chem.MolFromSmiles(r_smile))
+    
+    for p_smile in products_smiles_list:
+        products_molecule_list.append(Chem.MolFromSmiles(p_smile))
+
+    if (not reagents_molecule_list) or (not products_molecule_list):
+        st.warning("Could not generate one or more molecule images.")
+        return None
+
+    # Creation of the molecules images list
+    
+    reagents_images_list: list = []
+    products_images_list: list = []
+
+    for r_molecule in reagents_molecule_list:
+        reagents_images_list.append(Draw.MolToImage(r_molecule, size=(150,150)))
+    for p_molecule in products_molecule_list:
+        products_images_list.append(Draw.MolToImage(p_molecule, size=(150,150)))
+
+    ## Drawing on the interface
+
+    # Total width calculation
+    num_reagents = len(reagents_images_list)
+    num_products = len(products_images_list)
+
+    # Basis of the canevas dimension
+    plus_width = 20
+    arrow_space = 60
+    spacing = 10
+    mol_size = (150,150)
+
+    reagent_width = num_reagents * mol_size[0] + (num_reagents - 1) * plus_width
+    product_width = num_products * mol_size[0] + (num_products - 1) * plus_width
+    total_width = reagent_width + product_width + arrow_space + 4 * spacing
+    canvas_height = mol_size[1] + 40
+
+    canvas = Image.new("RGB", (total_width, canvas_height), "white")
+    draw = ImageDraw.Draw(canvas)
+
+    # Draw reagents with plus signs
+    x_offset = spacing
+    for i, img in enumerate(reagents_images_list):
+        canvas.paste(img, (x_offset, 20))
+        x_offset += mol_size[0]
+        if i < num_reagents - 1:
+            draw.text((x_offset + 6, canvas_height // 2 - 16), "+", fill="black", font_size=24)
+            x_offset += plus_width
+
+    # Draw reaction arrow
+
+    if kb == None:
+        arrow_x_start = x_offset + spacing
+        arrow_x_end = arrow_x_start + arrow_space - 10
+        arrow_y = canvas_height // 2
+        draw.line((arrow_x_start, arrow_y, arrow_x_end, arrow_y), fill="black", width=3)
+        draw.polygon([
+            (arrow_x_end + 5, arrow_y),
+            (arrow_x_end - 10, arrow_y - 5),
+            (arrow_x_end - 10, arrow_y + 5)
+        ], fill="black")
+
+        draw.text((arrow_x_start, arrow_y - 26), f"kf = {kf}", fill="black", font_size=16)
+
+        x_offset = arrow_x_end + spacing
+    else:
+        arrow_up_x_start = x_offset + spacing
+        arrow_up_x_end = arrow_up_x_start + arrow_space - 10
+        arrow_up_y = canvas_height // 2
+        draw.line((arrow_up_x_start, arrow_up_y, arrow_up_x_end - 1, arrow_up_y), fill="black", width=2)
+        draw.polygon([
+            (arrow_up_x_end, arrow_up_y + 1),
+            (arrow_up_x_end - 10, arrow_up_y - 6),
+            (arrow_up_x_end - 10, arrow_up_y)
+        ], fill="black")
+
+        draw.text((arrow_up_x_start, arrow_up_y - 28), f"kf = {kf}", fill="black", font_size=16)
+
+        arrow_down_x_start = x_offset + spacing
+        arrow_down_x_end = arrow_down_x_start + arrow_space - 10
+        arrow_down_y = (canvas_height // 2)  + 5
+        draw.line((arrow_down_x_start, arrow_down_y, arrow_down_x_end, arrow_down_y), fill="black", width=2)
+        draw.polygon([
+            (arrow_down_x_start, arrow_down_y + 1),
+            (arrow_down_x_start + 10, arrow_down_y),
+            (arrow_down_x_start + 10, arrow_down_y + 6)
+        ], fill="black")
+
+        draw.text((arrow_down_x_start, arrow_down_y + 12), f"kb = {kb}", fill="black", font_size=16)
+
+        x_offset = arrow_down_x_end + spacing
+
+        
+
+    # Draw products with plus signs
+    for i, img in enumerate(products_images_list):
+        canvas.paste(img, (x_offset, 20))
+        x_offset += mol_size[0]
+        if i < num_products - 1:
+            draw.text((x_offset + 5, canvas_height // 2 - 10), "+", fill="black", font=font)
+            x_offset += plus_width
+
+    return canvas
+    
+
+#####################################################################################################
+
+# Species input (reagents and products)
+species_input = st.text_input("Enter species (comma-separated)", "H2, N2, NH3")
 species = [s.strip() for s in species_input.split(",") if s.strip()]
 num_species = len(species)
 
@@ -33,101 +198,23 @@ num_reactions = st.number_input("Number of reactions", min_value=1, value=1, ste
 
 for i in range(num_reactions):
     with st.expander(f"Reaction {i+1}"):
-        reactants_str = st.text_input(f"Reactants (comma-separated) - R{i+1}", key=f"reactants_{i}")
-        products_str = st.text_input(f"Products (comma-separated) - R{i+1}", key=f"products_{i}")
-        kf = st.number_input(f"Forward rate constant kf - R{i+1}", min_value=0.0, value=1.0, key=f"kf_{i}")
-        kr = st.number_input(f"Reverse rate constant kr (0 for irreversible) - R{i+1}", min_value=0.0, value=0.0, key=f"kr_{i}")
+        reactants_str = st.text_input(f"Reactants (comma-separated) - Reaction{i+1}", key=f"reactants_{i}")
+        products_str = st.text_input(f"Products (comma-separated) - Reaction{i+1}", key=f"products_{i}")
+        kf = st.number_input(f"Forward rate constant kf - Reaction{i+1}", min_value=0.0, value=1.0, format="%.3f", key=f"kf_{i}")
+        kb = st.number_input(f"Backward rate constant kb (0 for irreversible) - Reaction{i+1}", min_value=0.0, value=0.0, format="%.3f", key=f"kr_{i}")
 
         reactants = [r.strip() for r in reactants_str.split(",") if r.strip()]
         products = [p.strip() for p in products_str.split(",") if p.strip()]
-        kr_val = kr if kr > 0 else None
+        kb_val = kb if kb > 0 else None
 
-        reaction_list.append((reactants, products, kf, kr_val))
-
-
-def rxn_diagram_multi(reagent_smiles_list, product_smiles_list):
-    try:
-        font = ImageFont.truetype("Times New Roman.ttf", 18)
-    except:
-        font = ImageFont.load_default()
-
-    # Convert SMILES to RDKit molecules
-    reagent_mols = [Chem.MolFromSmiles(smi) for smi in reagent_smiles_list if smi]
-    product_mols = [Chem.MolFromSmiles(smi2) for smi2 in product_smiles_list if smi2]
-
-    reagent_mols = [mol for mol in reagent_mols if mol]
-    product_mols = [mol2 for mol2 in product_mols if mol2]
-
-    if not reagent_mols or not product_mols:
-        st.warning("Could not generate one or more molecule images.")
-        return None
-
-    mol_size = (150, 150)
-    plus_width = 20
-    arrow_space = 60
-    spacing = 10
-
-    # Create images for molecules
-    reactant_imgs = [Draw.MolToImage(mol, size=mol_size) for mol in reagent_mols]
-    product_imgs = [Draw.MolToImage(mol, size=mol_size) for mol in product_mols]
-
-    # Total width calculation
-    num_reactants = len(reactant_imgs)
-    num_products = len(product_imgs)
-
-    reactant_width = num_reactants * mol_size[0] + (num_reactants - 1) * plus_width
-    product_width = num_products * mol_size[0] + (num_products - 1) * plus_width
-    total_width = reactant_width + product_width + arrow_space + 4 * spacing
-    canvas_height = mol_size[1] + 40
-
-    canvas = Image.new("RGB", (total_width, canvas_height), "white")
-    draw = ImageDraw.Draw(canvas)
-
-    # Draw reactants with plus signs
-    x_offset = spacing
-    for i, img in enumerate(reactant_imgs):
-        canvas.paste(img, (x_offset, 20))
-        x_offset += mol_size[0]
-        if i < num_reactants - 1:
-            draw.text((x_offset + 5, canvas_height // 2 - 10), "+", fill="black", font=font)
-            x_offset += plus_width
-
-    # Draw reaction arrow
-    arrow_x_start = x_offset + spacing
-    arrow_x_end = arrow_x_start + arrow_space - 10
-    arrow_y = canvas_height // 2
-    draw.line((arrow_x_start, arrow_y, arrow_x_end, arrow_y), fill="black", width=3)
-    draw.polygon([
-        (arrow_x_end, arrow_y),
-        (arrow_x_end - 10, arrow_y - 5),
-        (arrow_x_end - 10, arrow_y + 5)
-    ], fill="black")
-    x_offset = arrow_x_end + spacing
-
-    # Draw products with plus signs
-    for i, img in enumerate(product_imgs):
-        canvas.paste(img, (x_offset, 20))
-        x_offset += mol_size[0]
-        if i < num_products - 1:
-            draw.text((x_offset + 5, canvas_height // 2 - 10), "+", fill="black", font=font)
-            x_offset += plus_width
-
-    return canvas
+        reaction_list.append((reactants, products, kf, kb_val))
 
 if reactants and products:
-    reagents_smiles_list = []
-    products_smiles_list = []
+    image = rxn_diagram_multi(reactants, products, kf, kb_val)
+    st.image(image)
+else:
+    st.warning("Please insert both reactants and products for your reaction")
 
-    for reactant in reactants:
-        reagent_smile = get_smiles(reactant)
-        reagents_smiles_list.append(reagent_smile)
-    for product in products:
-        product_smile = get_smiles(product)
-        products_smiles_list.append(product)
-    st.write(f"The reagents smiles are: {reagents_smiles_list}")
-    st.write(f"The products smiles are: {products_smiles_list}")
-
-    rxn_diagram_multi(reagents_smiles_list, products_smiles_list)
 
 # Simulation time
 st.subheader("Simulation Time")
@@ -142,6 +229,7 @@ if st.button("Run Simulation"):
         # Use your custom plot function
         fig = plt.figure()
         plot_solution_nl(sol, species)
+        st.subheader("Concentration Plot")
         st.pyplot(fig)
 
     except Exception as e:
