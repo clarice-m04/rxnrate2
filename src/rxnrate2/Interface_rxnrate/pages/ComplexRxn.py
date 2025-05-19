@@ -21,7 +21,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-from rxnrate2.ODE_nonlinear import plot_solution_nl, solve_reactions
+from rxnrate2.ODE_nonlinear import plot_solution_nl_save, solve_reactions
 from rdkit import Chem
 from rdkit.Chem import Draw
 import matplotlib.pyplot as plt
@@ -322,7 +322,7 @@ if st.button("Run Simulation"):
 
         # Use your custom plot function
         fig = plt.figure()
-        plot_solution_nl(sol, species, filename)
+        plot_solution_nl_save(sol, species, filename)
         st.subheader("Concentration Plot")
         st.pyplot(fig)
 
