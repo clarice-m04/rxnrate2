@@ -66,6 +66,8 @@ It is designed to support:
 
 ## :fire: Usage
 
+The rxnrate2 package lets you simulate chemical reaction networks using concise and readable Python code. You can model both linear (first-order) and nonlinear (mass-action) systems — and even visualize them interactively.
+
 ### Linear Example: A → B → C
 
 ```python
@@ -83,6 +85,8 @@ sol = solve_reaction(M, y0, t_span)
 plot_solution(sol, ["A", "B", "C"])
 ```
 
+➡️ This example shows a simple unidirectional chain reaction using a linear rate matrix.
+
 ### Nonlinear Example: A + B ⇌ C
 
 ```python
@@ -99,6 +103,8 @@ t_span = (0, 10)
 sol = rxn.solve(y0, t_span)
 rxn.plot_solution(sol)
 ```
+➡️ This demonstrates how to set up nonlinear reversible reactions using symbolic reaction strings and automatic ODE generation.
+
 ### Streamlit Interface
 To explore the interactive interface, you can launch the **Streamlit GUI** in the following way:
 
