@@ -1,6 +1,8 @@
 import streamlit as st
 import numpy as np
 import pubchempy as pcp
+import os
+import pandas as pd
 
 st.set_page_config(page_title="Chemical Reaction Simulator", layout="centered")
 
@@ -30,6 +32,7 @@ set_background("rxnrate.jpg")
 
 st.title("Nonlinear Chemical Reaction Simulator")
 
+
 ######################################### Functions #################################################
 
 def get_smiles(query): 
@@ -51,6 +54,67 @@ def get_smiles(query):
     return fallback_smiles.get(query.strip(), None)
 
 
+# Check if your reactants are in the database
+
+data = pd.read_csv('rxnrate2/src/rxnrate2/Interface_rxnrate/pages/Data_projet.csv', sep = ";")
+df = pd.DataFrame(data)
+
+def check(reactant1, reactant2) -> bool | int:
+    pb1 = get_smiles(reactant1)
+    pb2 = get_smiles(reactant2)
+
+    mol1 = Chem.MolFromSmiles(pb1)
+    mol2 = Chem.MolFromSmiles(pb2)
+
+    smiles_can1 = Chem.MolToSmiles(mol1)
+    smiles_can2 = Chem.MolToSmiles(mol2)
+
+    if smiles_can1 in df['smiles r1'].values :
+        index1 = []
+        for a in range(0, len(df), 1):
+                if df.loc[a, 'smiles r1'] == smiles_can1:
+                    index1.append(a)
+        if smiles_can2 in df['smiles r2'].values:
+            index2 = []
+            for b in range(0, len(df), 1):
+                if df.loc[b, 'smiles r2'] == smiles_can2:
+                    index2.append(b)
+            common_index = list(set(index1) & set(index2))
+            if len(common_index) == 1:                
+                return True, int(''.join(map(str, common_index)))
+            else:
+                return False, 0
+        else:
+            return False, 0
+            
+    elif smiles_can1 in df['smiles r2'].values :
+        index3 = []
+        for c in range(0, len(df), 1):
+                if df.loc[c, 'smiles r2'] == smiles_can1:
+                    index3.append(c)
+        if smiles_can2 in df['smiles r1'].values:
+            index4 = []
+            for d in range(0, len(df), 1):
+                if df.loc[d, 'smiles r1'] == smiles_can2:
+                    index4.append(d)
+            common_index_bis = list(set(index3) & set(index4))
+            if len(common_index_bis) == 1:
+                return True, int(''.join(map(str, common_index_bis)))
+            else:
+                return False, 0
+        else:
+            return False, 0
+
+    else:
+        return False, 0
+
+# Calculate k at the chosen temperature
+
+def calc_temperature(temp: float,E: float, A: float) -> float:
+    return (A * (np.exp(-E/temp)))
+
+# Draw the reaction 
+
 def rxn_diagram_multi(reagents_list, products_list, kf, kb):
     try:
         font = ImageFont.truetype("Times New Roman.ttf", 18)
@@ -65,6 +129,8 @@ def rxn_diagram_multi(reagents_list, products_list, kf, kb):
         reagents_smiles_list.append(get_smiles(r))
     for p in products_list:
         products_smiles_list.append(get_smiles(p))
+    st.write(f"The reagents SMILES are : {reagents_smiles_list}")
+    st.write(f"The products SMILES are : {products_smiles_list}")
 
 
     # Convert SMILES to RDKit Molecules
@@ -100,7 +166,7 @@ def rxn_diagram_multi(reagents_list, products_list, kf, kb):
 
     # Basis of the canevas dimension
     plus_width = 20
-    arrow_space = 60
+    arrow_space = 100
     spacing = 10
     mol_size = (150,150)
 
@@ -200,14 +266,31 @@ for i in range(num_reactions):
     with st.expander(f"Reaction {i+1}"):
         reactants_str = st.text_input(f"Reactants (comma-separated) - Reaction{i+1}", key=f"reactants_{i}")
         products_str = st.text_input(f"Products (comma-separated) - Reaction{i+1}", key=f"products_{i}")
-        kf = st.number_input(f"Forward rate constant kf - Reaction{i+1}", min_value=0.0, value=1.0, format="%.3f", key=f"kf_{i}")
-        kb = st.number_input(f"Backward rate constant kb (0 for irreversible) - Reaction{i+1}", min_value=0.0, value=0.0, format="%.3f", key=f"kr_{i}")
+        
+        temperature_reaction = st.number_input(f"Temperature of the reaction {i+1} [°C]")
 
         reactants = [r.strip() for r in reactants_str.split(",") if r.strip()]
         products = [p.strip() for p in products_str.split(",") if p.strip()]
+        
+        if len(reactants) == 2:
+            is_in_data = check(reactants[0], reactants[1])
+            print(is_in_data)
+            if is_in_data[0] == True:
+                kf_calc = calc_temperature(temperature_reaction, df.loc[is_in_data[1], 'E'], df.loc[is_in_data[1], 'Arrhenius factor'])
+                kf = "%.2E" %kf_calc
+                st.write(f"The value of kf was found using the database, kf = {kf}")
+            else:
+                kf = st.number_input(f"Forward rate constant kf - Reaction{i+1}", min_value=0.0, value=1.0, format="%.3f", key=f"kf_{i}")
+                st.warning("No reaction found")
+        else:
+            kf = st.number_input(f"Forward rate constant kf - Reaction{i+1}", min_value=0.0, value=1.0, format="%.3f", key=f"kf_{i}")
+            st.warning("Lenght != 2")
+
+        kb = st.number_input(f"Backward rate constant kb (0 for irreversible) - Reaction{i+1}", min_value=0.0, value=0.0, format="%.3f", key=f"kr_{i}")
         kb_val = kb if kb > 0 else None
 
         reaction_list.append((reactants, products, kf, kb_val))
+
 
 if reactants and products:
     image = rxn_diagram_multi(reactants, products, kf, kb_val)
