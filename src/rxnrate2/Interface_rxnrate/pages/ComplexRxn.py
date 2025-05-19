@@ -8,7 +8,7 @@ st.set_page_config(page_title="Chemical Reaction Simulator", layout="centered")
 from rdkit import Chem
 from rdkit.Chem import Draw
 import matplotlib.pyplot as plt
-from rxnrate2.ODE_nonlinear import solve_reactions, plot_solution
+from rxnrate2.ODE_nonlinear import solve_reactions, plot_solution_nl
 from rxnrate2.Interface_rxnrate.pages.SimpleRxn import get_smiles
 from PIL import Image, ImageDraw, ImageFont
 
@@ -141,7 +141,7 @@ if st.button("Run Simulation"):
 
         # Use your custom plot function
         fig = plt.figure()
-        plot_solution(sol, species)
+        plot_solution_nl(sol, species)
         st.pyplot(fig)
 
     except Exception as e:
