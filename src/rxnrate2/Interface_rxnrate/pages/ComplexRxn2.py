@@ -1,6 +1,7 @@
 import streamlit as st
 import numpy as np
 import pubchempy as pcp
+import ODE_nonlinear
 
 st.set_page_config(page_title="Chemical Reaction Simulator", layout="centered")
 
@@ -19,13 +20,11 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+from ODE_nonlinear import plot_solution, solve_reactions
 from rdkit import Chem
 from rdkit.Chem import Draw
 import matplotlib.pyplot as plt
-from rxnrate2.ODE_nonlinear import solve_reactions, plot_solution
-#from rxnrate2.Interface_rxnrate.pages.SimpleRxn import get_smiles
 from PIL import Image, ImageDraw, ImageFont
-
 
 st.title("Nonlinear Chemical Reaction Simulator")
 
@@ -50,11 +49,11 @@ def get_smiles(query):
     return fallback_smiles.get(query.strip(), None)
 
 
-def rxn_diagram_multi(reagents_list, products_list):
+def rxn_diagram_multi(reagents_list, products_list, kf, kb):
     try:
-        font = ImageFont.truetype("Times New Roman.ttf", 18)
+        font_txt = ImageFont.truetype("Times New Roman.ttf", 18)
     except:
-        font = ImageFont.load_default()
+        font_txt = ImageFont.load_default()
 
     # Create new lists with the canonical smiles of reactants and products
     reagents_smiles_list: list = []
@@ -119,20 +118,53 @@ def rxn_diagram_multi(reagents_list, products_list):
         canvas.paste(img, (x_offset, 20))
         x_offset += mol_size[0]
         if i < num_reagents - 1:
-            draw.text((x_offset + 5, canvas_height // 2 - 10), "+", fill="black", font=font)
+            draw.text((x_offset + 6, canvas_height // 2 - 16), "+", fill="black", font_size=24)
             x_offset += plus_width
 
     # Draw reaction arrow
-    arrow_x_start = x_offset + spacing
-    arrow_x_end = arrow_x_start + arrow_space - 10
-    arrow_y = canvas_height // 2
-    draw.line((arrow_x_start, arrow_y, arrow_x_end, arrow_y), fill="black", width=3)
-    draw.polygon([
-        (arrow_x_end, arrow_y),
-        (arrow_x_end - 10, arrow_y - 5),
-        (arrow_x_end - 10, arrow_y + 5)
-    ], fill="black")
-    x_offset = arrow_x_end + spacing
+
+    if kb == None:
+        arrow_x_start = x_offset + spacing
+        arrow_x_end = arrow_x_start + arrow_space - 10
+        arrow_y = canvas_height // 2
+        draw.line((arrow_x_start, arrow_y, arrow_x_end, arrow_y), fill="black", width=3)
+        draw.polygon([
+            (arrow_x_end + 5, arrow_y),
+            (arrow_x_end - 10, arrow_y - 5),
+            (arrow_x_end - 10, arrow_y + 5)
+        ], fill="black")
+
+        draw.text((arrow_x_start, arrow_y - 26), f"kf = {kf}", fill="black", font_size=16)
+
+        x_offset = arrow_x_end + spacing
+    else:
+        arrow_up_x_start = x_offset + spacing
+        arrow_up_x_end = arrow_up_x_start + arrow_space - 10
+        arrow_up_y = canvas_height // 2
+        draw.line((arrow_up_x_start, arrow_up_y, arrow_up_x_end - 1, arrow_up_y), fill="black", width=2)
+        draw.polygon([
+            (arrow_up_x_end, arrow_up_y + 1),
+            (arrow_up_x_end - 10, arrow_up_y - 6),
+            (arrow_up_x_end - 10, arrow_up_y)
+        ], fill="black")
+
+        draw.text((arrow_up_x_start, arrow_up_y - 28), f"kf = {kf}", fill="black", font_size=16)
+
+        arrow_down_x_start = x_offset + spacing
+        arrow_down_x_end = arrow_down_x_start + arrow_space - 10
+        arrow_down_y = (canvas_height // 2)  + 5
+        draw.line((arrow_down_x_start, arrow_down_y, arrow_down_x_end, arrow_down_y), fill="black", width=2)
+        draw.polygon([
+            (arrow_down_x_start, arrow_down_y + 1),
+            (arrow_down_x_start + 10, arrow_down_y),
+            (arrow_down_x_start + 10, arrow_down_y + 6)
+        ], fill="black")
+
+        draw.text((arrow_down_x_start, arrow_down_y + 12), f"kb = {kb}", fill="black", font_size=16)
+
+        x_offset = arrow_down_x_end + spacing
+
+        
 
     # Draw products with plus signs
     for i, img in enumerate(products_images_list):
@@ -178,7 +210,8 @@ for i in range(num_reactions):
         reaction_list.append((reactants, products, kf, kb_val))
 
 if reactants and products:
-    rxn_diagram_multi(reactants, products)
+    image = rxn_diagram_multi(reactants, products, kf, kb_val)
+    st.image(image)
 else:
     st.warning("Please insert both reactants and products for your reaction")
 
