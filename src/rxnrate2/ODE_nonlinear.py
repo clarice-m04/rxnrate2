@@ -67,14 +67,4 @@ def plot_solution(sol, species):
     plt.show()
 
 
-# Example usage
-species_test = ['A', 'B', 'C', 'D']
-reactions_test = [
-    (['A', 'B'], ['C'], 1.0, 0.5),  # reversible
-    (['C'], ['A', 'B'], 0.1, None), #irreversible
-    (['A', 'C', 'B'], ['D', 'B'], 0.5, 0.5)  #multiple 
-]
-y0_vals = [1.0, 1.0, 0.0, 0.0]
 
-sol = solve_reactions(species_test, reactions_test, y0_vals)
-plot_solution(sol, species_test)

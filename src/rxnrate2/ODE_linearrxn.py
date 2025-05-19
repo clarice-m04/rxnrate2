@@ -54,34 +54,3 @@ def plot_solution(sol, species, filename="reaction_plot.jpg"):
     plt.tight_layout()  # Ensures labels aren't cut off
     plt.savefig(filename, dpi=300)
     plt.close() # Close the plot to avoid display if running in batch mode
-
-#def symbolic_solution(M_numeric, y0_numeric):
-#    """gives symbolic function for each concentration"""
-#     t = sp.Symbol('t')
-#     M = sp.Matrix(M_numeric)
-#    y0 = sp.Matrix(y0_numeric)
-#    yt = (M * t).exp() * y0
-#    return yt, t
-
-# === Example Usage ===
-species_test = ['A', 'B', 'C', 'D']
-reactions_test = [
-    ('A', 'B', 1.0, None),
-    ('B', 'C', 0.5, 0.3),
-    ('C', 'A', 0.2, None),
-    ('C', 'D', 2.0, 0.4)
-]
-y0_vals = [1.0, 0.0, 0.0, 0.0]  # Initial concentrations for A, B, C, D
-
-sol, M = solve_reaction(species_test, reactions_test, y0_vals)
-
-
-# Get symbolic expression
-#yt, t_sym = symbolic_solution(M, y0_vals)
-#print("Symbolic expression for concentrations:")
-#for i, s in enumerate(species):
-#    print(f"{s}(t) = {yt[i]}")
-
-plot_solution(sol, species_test)
-
-#NB: je pourrais rajouter l'evaluation de la concentration a un temps t donné et qu'il soit marqué sur le graphe
