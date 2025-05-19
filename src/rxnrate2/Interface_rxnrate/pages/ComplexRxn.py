@@ -130,9 +130,6 @@ def rxn_diagram_multi(reagents_list, products_list, kf, kb):
         reagents_smiles_list.append(get_smiles(r))
     for p in products_list:
         products_smiles_list.append(get_smiles(p))
-    st.write(f"The reagents SMILES are : {reagents_smiles_list}")
-    st.write(f"The products SMILES are : {products_smiles_list}")
-
 
     # Convert SMILES to RDKit Molecules
 
@@ -275,16 +272,15 @@ for i in range(num_reactions):
         
         if len(reactants) == 2:
             is_in_data = check(reactants[0], reactants[1])
-            print(is_in_data)
             if is_in_data[0] == True:
                 kf_value = calc_temperature(temperature_reaction, df.loc[is_in_data[1], 'E'], df.loc[is_in_data[1], 'Arrhenius factor'])
                 kf_written = "%.2E" %kf_value
                 kf_scheme = kf_written
-                st.write(f"The value of kf was found using the database, kf = {kf_scheme}")
+                st.write(f"The value of kf was found using the database, kf = {kf_scheme}.")
             else:
                 kf_value = st.number_input(f"Forward rate constant kf - Reaction{i+1}", min_value=0.0, value=1.0, format="%.3f", key=f"kf_{i}")
                 kf_scheme = kf_value
-                st.warning("No reaction found")
+                st.warning("No corresponding reaction in the database, please insert a value for kf.")
         else:
             kf_value = st.number_input(f"Forward rate constant kf - Reaction{i+1}", min_value=0.0, value=1.0, format="%.3f", key=f"kf_{i}")
             kf_scheme = kf_value
