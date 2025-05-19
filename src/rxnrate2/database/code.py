@@ -5,8 +5,12 @@ import numpy as np
 import pandas as pd
 from rdkit import Chem
 from rdkit.Chem import Draw
+import sys
+import os
 
-data = pd.read_csv( "git/rxnrate2/src/rxnrate2/database/Data_projet.csv", sep = ";")
+path_data = os.path.join(os.path.dirname(__file__), "Data_projet.csv")
+
+data = pd.read_csv(path_data, sep = ";")
 df = pd.DataFrame(data)
 
 # Check if your reactants are in the database
@@ -98,20 +102,22 @@ def check_molecule(canonicalized_smile: str) -> bool :
 compound1 = str(input('Please enter the smiles of the first reactant: '))
 compound2 = str(input('Please enter the smiles of the second reactant: '))
 
-smiles1_can = canonicalize_smiles(compound1)
-smiles2_can = canonicalize_smiles(compound2)
+def link_database(compound1, compound2):
+    smiles1_can = canonicalize_smiles(compound1)
+    smiles2_can = canonicalize_smiles(compound2)
 
-drawing1 = check_molecule(smiles1_can)
-drawing2 = check_molecule(smiles2_can)
+    drawing1 = check_molecule(smiles1_can)
+    drawing2 = check_molecule(smiles2_can)
 
-if drawing1 and drawing2 :
-    is_ok = check(smiles1_can, smiles2_can)
-    print(is_ok)
+    if drawing1 and drawing2 :
+        is_ok = check(smiles1_can, smiles2_can)
+        print(is_ok)
     
-    if is_ok[0] == True:
-        temperature = float(input('Please enter the temperature of the reaction you will perform in [°C]: '))
-        if temperature < 273 :
-            temperature += 273     # Conversion en Kelvin si la temperature a bien été donnée en °C (supposant que peu de réaction vont avoir lieu à plus de 273 °C)
+        if is_ok[0] == True:
+            temperature = float(input('Please enter the temperature of the reaction you will perform in [°C]: '))
+            if temperature < 273 :
+                temperature += 273     # Conversion en Kelvin si la temperature a bien été donnée en °C (supposant que peu de réaction vont avoir lieu à plus de 273 °C)
 
-        value_k_corrected = calc_temperature(temperature, df.loc[is_ok[1], 'E'], df.loc[is_ok[1], 'Arrhenius factor'])
-        print("%.2E" %value_k_corrected, "L/(mol s)")
+            value_k_corrected = calc_temperature(temperature, df.loc[is_ok[1], 'E'], df.loc[is_ok[1], 'Arrhenius factor'])
+            return value_k_corrected
+            #("%.2E" %value_k_corrected, "L/(mol s)")
