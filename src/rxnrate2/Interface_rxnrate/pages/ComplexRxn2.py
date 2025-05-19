@@ -229,6 +229,7 @@ if st.button("Run Simulation"):
         # Use your custom plot function
         fig = plt.figure()
         plot_solution(sol, species)
+        st.subheader("Concentration Plot")
         st.pyplot(fig)
 
     except Exception as e:
