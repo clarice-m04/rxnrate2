@@ -2,7 +2,6 @@ import streamlit as st
 import sys
 import os
 import pubchempy as pcp
-import base64
 
 from rxnrate2.ODE_linearrxn import solve_reaction, plot_solution
 from rxnrate2.Interface_rxnrate.__init__ import set_background
