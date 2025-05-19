@@ -76,7 +76,7 @@ with col2:
     st.subheader("**Main characteristics:**")
     st.write("- Reaction of type A + B -> C")
     st.write("- Two or more reactants give one product")
-    st.page_link("pages/ComplexRxn.py", label="More complex reaction", icon="2️⃣")
+    st.page_link("pages/ComplexRxn2.py", label="More complex reaction", icon="2️⃣")
     
 # col1, col2 = st.columns(2)
 #with col1:
