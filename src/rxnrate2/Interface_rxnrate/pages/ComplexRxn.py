@@ -277,24 +277,24 @@ for i in range(num_reactions):
             is_in_data = check(reactants[0], reactants[1])
             print(is_in_data)
             if is_in_data[0] == True:
-                kf = calc_temperature(temperature_reaction, df.loc[is_in_data[1], 'E'], df.loc[is_in_data[1], 'Arrhenius factor'])
-                kf_write = "%.2E" %kf
-                st.write(f"The value of kf was found using the database, kf = {kf_write}")
+                kf_value = calc_temperature(temperature_reaction, df.loc[is_in_data[1], 'E'], df.loc[is_in_data[1], 'Arrhenius factor'])
+                kf_written = "%.2E" %kf_value
+                st.write(f"The value of kf was found using the database, kf = {kf_written}")
             else:
-                kf = st.number_input(f"Forward rate constant kf - Reaction{i+1}", min_value=0.0, value=1.0, format="%.3f", key=f"kf_{i}")
+                kf_value = st.number_input(f"Forward rate constant kf - Reaction{i+1}", min_value=0.0, value=1.0, format="%.3f", key=f"kf_{i}")
                 st.warning("No reaction found")
         else:
-            kf = st.number_input(f"Forward rate constant kf - Reaction{i+1}", min_value=0.0, value=1.0, format="%.3f", key=f"kf_{i}")
+            kf_value = st.number_input(f"Forward rate constant kf - Reaction{i+1}", min_value=0.0, value=1.0, format="%.3f", key=f"kf_{i}")
             st.warning("Lenght != 2")
 
         kb = st.number_input(f"Backward rate constant kb (0 for irreversible) - Reaction{i+1}", min_value=0.0, value=0.0, format="%.3f", key=f"kr_{i}")
         kb_val = kb if kb > 0 else None
 
-        reaction_list.append((reactants, products, kf, kb_val))
+        reaction_list.append((reactants, products, kf_value, kb_val))
 
 
 if reactants and products:
-    image = rxn_diagram_multi(reactants, products, kf, kb_val)
+    image = rxn_diagram_multi(reactants, products, kf_value, kb_val)
     st.image(image)
 else:
     st.warning("Please insert both reactants and products for your reaction")
