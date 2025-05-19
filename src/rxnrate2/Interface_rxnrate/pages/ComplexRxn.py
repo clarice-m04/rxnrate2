@@ -43,9 +43,9 @@ def get_smiles(query):
         'H2': '[H][H]',
         'N2': 'N#N',
         'CH4': 'C',
-        'NH3': 'N',#
+        'NH3': 'N',
     }
-    try:#
+    try:
         compound = pcp.get_compounds(query, 'name')
         if compound:
             return compound[0].canonical_smiles
@@ -255,7 +255,7 @@ num_species = len(species)
 st.subheader("Initial Concentrations")
 initial_conc = []
 for s in species:
-    conc = st.number_input(f"[{s}]₀", min_value=0.0, value=1.0, key=f"conc_{s}")
+    conc = st.number_input(f"[{s}]₀", min_value=0.0, value=1.0, format="%.5f", key=f"conc_{s}")
     initial_conc.append(conc)
 
 # Reaction input
@@ -294,7 +294,7 @@ for i in range(num_reactions):
 
 
 if reactants and products:
-    image = rxn_diagram_multi(reactants, products, kf, kb_val)
+    image = rxn_diagram_multi(reactants, products, kf_write, kb_val)
     st.image(image)
 else:
     st.warning("Please insert both reactants and products for your reaction")
