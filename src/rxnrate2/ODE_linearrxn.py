@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
-import sympy as sp
+
 
 def build_M_matrix(species, reactions):
     """Constructs matrix M from the rxn definitions
@@ -54,3 +54,18 @@ def plot_solution(sol, species, filename="reaction_plot.jpg"):
     plt.tight_layout()  # Ensures labels aren't cut off
     plt.savefig(filename, dpi=300)
     plt.close() # Close the plot to avoid display if running in batch mode
+
+def plot_solution_forjup(sol, species):
+    """plots each speacies' concentration"""
+    for i, s in enumerate(species):
+        plt.plot(sol.t, sol.y[i], label=s)
+    plt.xlabel('Time', fontname='Times New Roman', fontsize=14)
+    plt.ylabel('Concentration', fontname='Times New Roman', fontsize=14)
+    plt.xticks(fontname= 'Times New Roman')
+    plt.yticks(fontname= 'Times New Roman') 
+    plt.title('Concentration over time of each species', fontname='Times New Roman', fontsize=14)
+    plt.legend(prop={'family': 'Times New Roman'})
+    #plt.show()
+    #plt.grid(True)
+    plt.tight_layout()  # Ensures labels aren't cut off
+    plt.show() 
