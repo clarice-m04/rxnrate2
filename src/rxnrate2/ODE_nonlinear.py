@@ -54,7 +54,7 @@ def solve_reactions(species, reactions, y0_vals, t_span=(0, 10), t_eval=None):
     sol = solve_ivp(rhs, t_span, y0_vals, method='RK45', t_eval=t_eval)
     return sol
 
-def plot_solution_nl(sol, species, filename):
+def plot_solution_nl(sol, species):
     """plots each species' concentration over time"""
     for i, s in enumerate(species):
         plt.plot(sol.t, sol.y[i], label=s)
@@ -79,6 +79,3 @@ def plot_solution_nl_save(sol, species, filename):
     plt.show()
     plt.tight_layout()  # Ensures labels aren't cut off
     plt.savefig(filename, dpi=300)
-
-
-
