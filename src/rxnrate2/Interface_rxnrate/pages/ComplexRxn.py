@@ -310,11 +310,25 @@ if st.button("Run Simulation"):
     try:
         sol = solve_reactions(species, reaction_list, initial_conc, t_span=(0, t_max), t_eval=t_eval)
 
+        #look for the folder to put the graph in
+        try:
+            os.mkdir("figures")
+        except FileExistsError:  # directory already exists
+            print(f"Directory for figures already exists")
+        except Exception as error:  # other error
+            print(f"An Error occured: {error}")
+
+        filename = f"./figures/complex_{reaction_list}.jpg"
+
         # Use your custom plot function
         fig = plt.figure()
-        plot_solution_nl(sol, species)
+        plot_solution_nl(sol, species, filename)
         st.subheader("Concentration Plot")
         st.pyplot(fig)
 
     except Exception as e:
         st.error(f"An error occurred: {e}")
+
+
+### Ajouter un bouton "Clear all" qui remet tout à 0
+### Faire en sorte que ca affiche toujours la premiere reaction meme si in en ajoute une deuxieme
