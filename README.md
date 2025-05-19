@@ -92,6 +92,37 @@ pip install ".[full]"
 
 ---
 
+## 🛠️ Development installation
+
+Initialize Git (only for the first time). 
+
+Note: You should have create an empty repository on `https://github.com:clarice-m04/rxnrate2`.
+
+```
+git init
+git add * 
+git add .*
+git commit -m "Initial commit" 
+git branch -M main
+git remote add origin git@github.com:clarice-m04/rxnrate2.git 
+git push -u origin main
+```
+
+Then add and commit changes as usual. 
+
+To install the package, run
+
+```
+(rxnrate2) $ pip install -e ".[test,doc]"
+```
+
+### Run tests and coverage
+
+```
+(conda_env) $ pip install tox
+(conda_env) $ tox
+```
+
 ## 📁 Project Structure
 
 ```
