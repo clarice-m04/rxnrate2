@@ -26,7 +26,7 @@ def get_smiles(query):
     try:#
         compound = pcp.get_compounds(query, 'name')
         if compound:
-            return compound[0].isomeric_smiles
+            return compound[0].canonical_smiles
     except:
         pass
     return fallback_smiles.get(query.strip(), None)
