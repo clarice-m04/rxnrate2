@@ -9,7 +9,7 @@ rxnrate2: Modeling Chemical Reaction Kinetics with Python
 <br>
 
 ## Simulating Reaction Dynamics with Linear and Nonlinear Systems  
-### Collaborator: Clarice M.  
+### Collaborator: Mio Kobayashi, Ambrine Maud Labout, Elodie-Angélique Lendi, Clarice Jasmine Mihalache 
 #### Practical Programming in Chemistry @ EPFL
 
 ## Table of Contents
@@ -22,12 +22,12 @@ rxnrate2: Modeling Chemical Reaction Kinetics with Python
 
 ## :pen: Introduction
 
-This package was developed as part of the *Practical Programming in Chemistry* course at EPFL (Spring 2024).  
+This package was developed as part of the *Practical Programming in Chemistry* course at EPFL (Spring 2025).  
 **rxnrate2** simulates the time evolution of chemical species in reaction networks — both linear (first-order) and nonlinear (mass-action) — using Python-based numerical solvers.
 
 It is designed to support:
 - educational exploration of reaction kinetics,
-- symbolic and numerical investigations,
+- numerical investigations of concentrations over time,
 - and visualizations via an optional Streamlit app.
 
 ## :paintbrush: Features
@@ -36,16 +36,13 @@ It is designed to support:
 
 - 📈 Model **first-order linear reactions** using matrix-based ODEs.
 - 🔁 Simulate **nonlinear mass-action systems** with reversible reactions.
-- 🔢 Handle **custom stoichiometries** in arbitrary reaction schemes.
-- 📊 Visualize concentration profiles over time.
+- 📊 Visualize concentration profiles over time with graphs.
 - 💡 Interact with reactions using a built-in **Streamlit GUI**.
-- 🧪 Extend and adapt the framework for symbolic or mechanistic studies.
 
 ### Example Reaction Types Supported
 
 - `A → B → C` (linear chain)
 - `A + B ⇌ C` (nonlinear reversible)
-- `2A + B → D` (custom stoichiometry)
 
 ## :fire: Usage
 
@@ -83,7 +80,7 @@ sol = rxn.solve(y0, t_span)
 rxn.plot_solution(sol)
 ```
 
-## Installation
+## :hammer: Installation
 
 Create and activate a new environment:
 
@@ -104,7 +101,7 @@ To use the Streamlit GUI, also install:
 pip install streamlit
 ```
 
-## Development Installation
+## :hammer: Development Installation
 
 Set up the repo locally:
 
@@ -132,7 +129,7 @@ pip install tox
 tox
 ```
 
-## License
+## :scroll: License
 
 This project is licensed under the MIT License. You are free to use, modify, and distribute this software under the terms described in the [LICENSE](LICENSE) file.
 
