@@ -205,7 +205,7 @@ if st.button("Add Reaction"):
             print(f"An Error occured: {error}")
 
         # The file is named avec the reagents and the products
-        filename = f"./figures/{st.session_state.reaction_tuples}.jpg"
+        filename = f"./figures/simple_{st.session_state.reaction_tuples}.jpg"
 
         # Solve reaction rate equations to compute concentrations
         s, m = solve_reaction(
@@ -221,7 +221,7 @@ if st.button("Remove Last Reaction"):
     if st.session_state.reactions:
 
         # Remove last plot from the file
-        filename = f"./figures/{st.session_state.reaction_tuples}.jpg"
+        filename = f"./figures/simple_{st.session_state.reaction_tuples}.jpg"
         os.remove(filename)
 
         # Remove the last elements
@@ -255,10 +255,8 @@ if st.button("Remove Last Reaction"):
 
         st.success("✅ Last reaction removed.")
 
-        # st.image(filename, caption="Reaction Rate Picture", use_container_width=True)
-
         # Save new image filename to display later
-        new_filename = f"./figures/{st.session_state.reaction_tuples}.jpg"
+        new_filename = f"./figures/simple_{st.session_state.reaction_tuples}.jpg"
         st.session_state["last_action_message"] = "✅ Last reaction removed."
         st.session_state["new_image_to_show"] = new_filename
 
@@ -320,5 +318,5 @@ if st.session_state.reactions != []:
         del st.session_state["last_action_message"]
         del st.session_state["new_image_to_show"]
     else:
-        filename = f"./figures/{st.session_state.reaction_tuples}.jpg"
+        filename = f"./figures/simple_{st.session_state.reaction_tuples}.jpg"
         st.image(filename, caption="Reaction Rate Picture", use_container_width=True)
