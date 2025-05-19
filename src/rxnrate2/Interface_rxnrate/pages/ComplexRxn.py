@@ -294,7 +294,7 @@ for i in range(num_reactions):
 
 
 if reactants and products:
-    image = rxn_diagram_multi(reactants, products, kf_write, kb_val)
+    image = rxn_diagram_multi(reactants, products, kf, kb_val)
     st.image(image)
 else:
     st.warning("Please insert both reactants and products for your reaction")
