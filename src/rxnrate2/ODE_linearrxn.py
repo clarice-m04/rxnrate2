@@ -55,8 +55,10 @@ def plot_solution(sol, species, filename="reaction_plot.jpg"):
     plt.savefig(filename, dpi=300)
     plt.close() # Close the plot to avoid display if running in batch mode
 
-def plot_solution_forjup(sol, species):
-    """plots each speacies' concentration"""
+# For Jupyter Notebook
+# This function is similar to plot_solution but does not save the figure
+def plot_solution_forjupyter(sol, species):
+    """plots each speacies' concentration for the jupyter notebook"""
     for i, s in enumerate(species):
         plt.plot(sol.t, sol.y[i], label=s)
     plt.xlabel('Time', fontname='Times New Roman', fontsize=14)
