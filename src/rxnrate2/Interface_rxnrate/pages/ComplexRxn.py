@@ -53,10 +53,10 @@ def rxn_diagram_multi(reagent_smiles_list, product_smiles_list):
 
     # Convert SMILES to RDKit molecules
     reagent_mols = [Chem.MolFromSmiles(smi) for smi in reagent_smiles_list if smi]
-    product_mols = [Chem.MolFromSmiles(smi) for smi in product_smiles_list if smi]
+    product_mols = [Chem.MolFromSmiles(smi2) for smi2 in product_smiles_list if smi2]
 
     reagent_mols = [mol for mol in reagent_mols if mol]
-    product_mols = [mol for mol in product_mols if mol]
+    product_mols = [mol2 for mol2 in product_mols if mol2]
 
     if not reagent_mols or not product_mols:
         st.warning("Could not generate one or more molecule images.")
@@ -68,7 +68,7 @@ def rxn_diagram_multi(reagent_smiles_list, product_smiles_list):
     spacing = 10
 
     # Create images for molecules
-    reactant_imgs = [Draw.MolToImage(mol, size=mol_size) for mol in reactant_mols]
+    reactant_imgs = [Draw.MolToImage(mol, size=mol_size) for mol in reagent_mols]
     product_imgs = [Draw.MolToImage(mol, size=mol_size) for mol in product_mols]
 
     # Total width calculation
