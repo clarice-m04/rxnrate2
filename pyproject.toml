@@ -9,7 +9,7 @@ requires-python = ">=3.10"
 license = {file = "LICENSE"}
 description = "Calculates and graphs the way concentrations advance in a reaction"
 dependencies = [
-    # "rdkit",
+    "numpy", "matplotlib", "scipy", "pandas", "seaborn", "statsmodels"
 ]
 authors = [
     {name = "Clarice", email = "mihalacheclarice@gmail.com"}
