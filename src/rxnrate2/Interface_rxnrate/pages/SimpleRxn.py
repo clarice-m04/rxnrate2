@@ -5,6 +5,7 @@ import pubchempy as pcp
 import base64
 
 from rxnrate2.ODE_linearrxn import solve_reaction, plot_solution
+from rxnrate2.Interface_rxnrate.functions import set_background
 from rdkit import Chem
 from rdkit.Chem import Draw
 from PIL import Image, ImageDraw, ImageFont
@@ -19,9 +20,9 @@ def get_smiles(query):
         compound = pcp.get_compounds(query, "name")
         if compound:
             return compound[0].canonical_smiles
-    except:
-        pass
-    return fallback_smiles.get(query.strip(), None)
+    except Exception as error:  # other error
+        print(f"An Error occured: {error}")
+
 
 ## Helper: drawing function
 def draw_reaction(
@@ -86,6 +87,8 @@ def draw_reaction(
 
 
 ### Define interactive page with buttons ###
+
+set_background("rxnrate.jpg")
 
 ## Times new roman font
 st.markdown(

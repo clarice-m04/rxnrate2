@@ -24,6 +24,9 @@ from rdkit import Chem
 from rdkit.Chem import Draw
 import matplotlib.pyplot as plt
 from PIL import Image, ImageDraw, ImageFont
+from rxnrate2.Interface_rxnrate.functions import set_background
+
+set_background("rxnrate.jpg")
 
 st.title("Nonlinear Chemical Reaction Simulator")
 
