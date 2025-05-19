@@ -102,7 +102,7 @@ def check_molecule(canonicalized_smile: str) -> bool :
 compound1 = str(input('Please enter the smiles of the first reactant: '))
 compound2 = str(input('Please enter the smiles of the second reactant: '))
 
-def link_database(compound1, compound2):
+def link_database(compound1, compound2, temperature):
     smiles1_can = canonicalize_smiles(compound1)
     smiles2_can = canonicalize_smiles(compound2)
 
@@ -114,7 +114,7 @@ def link_database(compound1, compound2):
         print(is_ok)
     
         if is_ok[0] == True:
-            temperature = float(input('Please enter the temperature of the reaction you will perform in [°C]: '))
+            #temperature = float(input('Please enter the temperature of the reaction you will perform in [°C]: '))
             if temperature < 273 :
                 temperature += 273     # Conversion en Kelvin si la temperature a bien été donnée en °C (supposant que peu de réaction vont avoir lieu à plus de 273 °C)
 
