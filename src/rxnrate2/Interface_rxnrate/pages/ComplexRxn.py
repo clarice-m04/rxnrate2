@@ -296,11 +296,11 @@ for i in range(num_reactions):
         reaction_list.append((reactants, products, kf_value, kb_val))
 
 
-if reactants and products:
-    image = rxn_diagram_multi(reactants, products, kf_scheme, kb_val)
-    st.image(image)
-else:
-    st.warning("Please insert both reactants and products for your reaction")
+    if reactants and products:
+        image = rxn_diagram_multi(reactants, products, kf_scheme, kb_val)
+        st.image(image)
+    else:
+        st.warning("Please insert both reactants and products for your reaction")
 
 
 # Simulation time
