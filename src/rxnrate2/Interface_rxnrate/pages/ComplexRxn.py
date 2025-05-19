@@ -280,7 +280,7 @@ for i in range(num_reactions):
                 kf_value = calc_temperature(temperature_reaction, df.loc[is_in_data[1], 'E'], df.loc[is_in_data[1], 'Arrhenius factor'])
                 kf_written = "%.2E" %kf_value
                 kf_scheme = kf_written
-                st.write(f"The value of kf was found using the database, kf = {kf_written}")
+                st.write(f"The value of kf was found using the database, kf = {kf_scheme}")
             else:
                 kf_value = st.number_input(f"Forward rate constant kf - Reaction{i+1}", min_value=0.0, value=1.0, format="%.3f", key=f"kf_{i}")
                 kf_scheme = kf_value
@@ -297,7 +297,7 @@ for i in range(num_reactions):
 
 
 if reactants and products:
-    image = rxn_diagram_multi(reactants, products, kf_value, kb_val)
+    image = rxn_diagram_multi(reactants, products, kf_scheme, kb_val)
     st.image(image)
 else:
     st.warning("Please insert both reactants and products for your reaction")
