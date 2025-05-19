@@ -23,12 +23,12 @@ rxnrate2: Modeling Chemical Reaction Kinetics with Python
 ## :pen: Introduction
 
 This package was developed as part of the *Practical Programming in Chemistry* course at EPFL (Spring 2025).  
-**rxnrate2** simulates the time evolution of chemical species in reaction networks — both linear (first-order) and nonlinear (mass-action) — using Python-based numerical solvers.
+**rxnrate2** simulates the time evolution of chemical species in reaction networks, both linear (first-order) and nonlinear (mass-action), using Python-based numerical solvers. Additionnaly, the molecules involved in the reactions are also shown.
 
 It is designed to support:
-- educational exploration of reaction kinetics,
+- graphical exploration of reaction kinetics,
 - numerical investigations of concentrations over time,
-- and visualizations via an optional Streamlit app.
+- and visualizations via an optional Streamlit app (for the molecular reaction and the kinetics over time).
 
 ## :paintbrush: Features
 
@@ -36,16 +36,18 @@ It is designed to support:
 **rxnrate2** provides a flexible and intuitive framework for simulating chemical reaction dynamics.
 
 ### 🔹 First-Order Linear Reactions
+- Supports arbitrary reaction networks with one reagent and one product.
 - Define reaction systems where the rate of change of each species is a linear combination of others.
 - Uses matrix exponentials or `solve_ivp` with a coefficient matrix for efficient time evolution.
 - Suitable for systems like radioactive decay chains, unimolecular reactions, and sequential steps.
 
 ### 🔹 Nonlinear Mass-Action Kinetics
 - Supports arbitrary reaction networks with any number of species and reactions.
-- Handles complex stoichiometries and reversible reactions (e.g., `2A + B ⇌ C + D`).
+- Handles reversible and irreversible reactions.
 - Rates computed via mass-action laws: forward and backward rates depend on instantaneous concentrations.
+- Suitable for many types of systems which include multiple reagents and products.
 
-### 📉 Concentration Profile Plotting
+### 📉 Concentration Profile Plotting built-in
 - Built-in matplotlib-based visualization of species concentrations over time.
 - Supports both linear and nonlinear simulations.
 - Automatically assigns colors and handles legends for clarity.
