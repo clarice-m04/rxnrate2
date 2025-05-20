@@ -15,12 +15,37 @@ from PIL import Image, ImageDraw, ImageFont
 
 ## Helper: fallback SMILESdef get_smiles(query):
 def get_smiles(query):
+    # 1. Try to interpret as an element using RDKit
+    try:
+        # Normalize element symbol (e.g., "fe" → "Fe")
+        element_symbol = query.strip().capitalize()
+        mol = Chem.MolFromSmiles(f'[{element_symbol}]')
+        if mol:
+            smiles = Chem.MolToSmiles(mol)
+            if smiles:
+                return smiles
+    except Exception as error:
+        print(f"RDKit element parsing error: {error}")
+
+    # 2. Try to fetch from PubChem by name
     try:
         compound = pcp.get_compounds(query, "name")
-        if compound:
+        if compound and compound[0].canonical_smiles:
             return compound[0].canonical_smiles
-    except Exception as error:  # other error
-        print(f"An Error occured: {error}")
+    except Exception as error:
+        print(f"PubChem name search error: {error}")
+
+    # 3. Fallback: try fetching by molecular formula
+    try:
+        compound = pcp.get_compounds(query, "formula")
+        if compound and compound[0].canonical_smiles:
+            return compound[0].canonical_smiles
+    except Exception as error:
+        print(f"PubChem formula search error: {error}")
+
+    # Nothing found
+    print(f"No SMILES found for query: '{query}'")
+    return None
 
 
 ## Helper: drawing function
