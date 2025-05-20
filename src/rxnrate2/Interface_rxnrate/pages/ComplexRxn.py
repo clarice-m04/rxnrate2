@@ -4,6 +4,14 @@ import pubchempy as pcp
 import os
 import pandas as pd
 
+from rxnrate2.ODE_nonlinear import plot_solution_nl_save, solve_reactions
+from rdkit import Chem
+from rdkit.Chem import Draw
+import matplotlib.pyplot as plt
+from PIL import Image, ImageDraw, ImageFont
+from rxnrate2.Interface_rxnrate.__init__ import set_background
+
+
 st.set_page_config(page_title="Chemical Reaction Simulator", layout="centered")
 
 ## Times new roman font
@@ -21,20 +29,15 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-from rxnrate2.ODE_nonlinear import plot_solution_nl_save, solve_reactions
-from rdkit import Chem
-from rdkit.Chem import Draw
-import matplotlib.pyplot as plt
-from PIL import Image, ImageDraw, ImageFont
-from rxnrate2.Interface_rxnrate.__init__ import set_background
-
 set_background("rxnrate.jpg")
 
+## Title
 st.title("Nonlinear Chemical Reaction Simulator")
 
 
 ######################################### Functions #################################################
 
+## Get the SMILES from the name input of the user
 def get_smiles(query):
     # 1. Try to interpret as an element using RDKit
     try:
@@ -69,7 +72,7 @@ def get_smiles(query):
     return None
 
 
-# Check if your reactants are in the database
+## Check if your reactants are in the database
 path_database = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),"database/Data_projet.csv")
 
 data = pd.read_csv(path_database, sep = ";")
@@ -124,13 +127,11 @@ def check(reactant1, reactant2) -> bool | int:
     else:
         return False, 0
 
-# Calculate k at the chosen temperature
-
+## Calculate k at the chosen temperature
 def calc_temperature(temp: float,E: float, A: float) -> float:
     return (A * (np.exp(-E/temp)))
 
-# Draw the reaction 
-
+## Draw the reaction 
 def rxn_diagram_multi(reagents_list, products_list, kf, kb):
     try:
         font = ImageFont.truetype("Times New Roman.ttf", 18)
@@ -258,19 +259,19 @@ def rxn_diagram_multi(reagents_list, products_list, kf, kb):
 
 #####################################################################################################
 
-# Species input (reagents and products)
+## Species input (reagents and products)
 species_input = st.text_input("Enter species (comma-separated)", "H2, N2, NH3")
 species = [s.strip() for s in species_input.split(",") if s.strip()]
 num_species = len(species)
 
-# Initial concentrations
+## Initial concentrations
 st.subheader("Initial Concentrations")
 initial_conc = []
 for s in species:
     conc = st.number_input(f"[{s}]₀", min_value=0.0, value=1.0, format="%.5f", key=f"conc_{s}")
     initial_conc.append(conc)
 
-# Reaction input
+## Reaction input
 st.subheader("Define Reactions")
 reaction_list = []
 num_reactions = st.number_input("Number of reactions", min_value=1, value=1, step=1)
@@ -313,12 +314,12 @@ for i in range(num_reactions):
         st.warning("Please insert both reactants and products for your reaction")
 
 
-# Simulation time
+## Simulation time
 st.subheader("Simulation Time")
 t_max = st.number_input("Maximum time", min_value=1.0, value=10.0)
 t_eval = np.linspace(0, t_max, 300)
 
-# Run simulation
+## Run simulation button
 if st.button("Run Simulation"):
     try:
         sol = solve_reactions(species, reaction_list, initial_conc, t_span=(0, t_max), t_eval=t_eval)
@@ -341,7 +342,3 @@ if st.button("Run Simulation"):
 
     except Exception as e:
         st.error(f"An error occurred: {e}")
-
-
-### Ajouter un bouton "Clear all" qui remet tout à 0
-### Faire en sorte que ca affiche toujours la premiere reaction meme si in en ajoute une deuxieme

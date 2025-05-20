@@ -10,10 +10,9 @@ from rdkit.Chem import Draw
 from PIL import Image, ImageDraw, ImageFont
 
 
-### Definition of functions to draw the reactions using SMILES ###
+######################################### Functions #################################################
 
-
-## Helper: fallback SMILESdef get_smiles(query):
+## Get the SMILES from the name input of the user
 def get_smiles(query):
     # 1. Try to interpret as an element using RDKit
     try:
@@ -47,8 +46,7 @@ def get_smiles(query):
     print(f"No SMILES found for query: '{query}'")
     return None
 
-
-## Helper: drawing function
+## Draw the reaction
 def draw_reaction(
     reagent_smiles,
     product_smiles,
@@ -109,6 +107,7 @@ def draw_reaction(
 
     return canvas
 
+#####################################################################################################
 
 ### Define interactive page with buttons ###
 
@@ -133,10 +132,10 @@ st.markdown(
 )
 
 ## Title
-st.title("Welcome in linear reaction part")
+st.title("Linear Chemical Reaction Simulator")
 
 ## Subtitle
-st.title("Chemical Reaction Collector")
+st.title("Define Reactions")
 
 ## Data structures
 if "reagents" not in st.session_state:
@@ -153,7 +152,7 @@ if "species_list" not in st.session_state:
 if "reaction_tuples" not in st.session_state:
     st.session_state.reaction_tuples = []
 
-## Form input
+## Input form
 col1, col2 = st.columns(2)
 with col1:
     reagent = st.text_input("Reagent (Formula or Name, e.g. H2O)")
@@ -304,7 +303,7 @@ if st.button("Clear All Reactions"):
     st.success("All reactions have been cleared.")
 
 
-### Visualizations ###
+### Visualisations ###
 st.header("Reaction Visualizations")
 
 ## Draw the reaction using SMILES
