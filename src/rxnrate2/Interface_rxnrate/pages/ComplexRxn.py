@@ -35,23 +35,38 @@ st.title("Nonlinear Chemical Reaction Simulator")
 
 ######################################### Functions #################################################
 
-def get_smiles(query): 
-    fallback_smiles = {
-        'H2O': 'O',
-        'CO2': 'O=C=O',
-        'O2': 'O=O',
-        'H2': '[H][H]',
-        'N2': 'N#N',
-        'CH4': 'C',
-        'NH3': 'N',
-    }
+def get_smiles(query):
+    # 1. Try to interpret as an element using RDKit
     try:
-        compound = pcp.get_compounds(query, 'name')
-        if compound:
+        # Normalize element symbol (e.g., "fe" → "Fe")
+        element_symbol = query.strip().capitalize()
+        mol = Chem.MolFromSmiles(f'[{element_symbol}]')
+        if mol:
+            smiles = Chem.MolToSmiles(mol)
+            if smiles:
+                return smiles
+    except Exception as error:
+        print(f"RDKit element parsing error: {error}")
+
+    # 2. Try to fetch from PubChem by name
+    try:
+        compound = pcp.get_compounds(query, "name")
+        if compound and compound[0].canonical_smiles:
             return compound[0].canonical_smiles
-    except:
-        pass
-    return fallback_smiles.get(query.strip(), None)
+    except Exception as error:
+        print(f"PubChem name search error: {error}")
+
+    # 3. Fallback: try fetching by molecular formula
+    try:
+        compound = pcp.get_compounds(query, "formula")
+        if compound and compound[0].canonical_smiles:
+            return compound[0].canonical_smiles
+    except Exception as error:
+        print(f"PubChem formula search error: {error}")
+
+    # Nothing found
+    print(f"No SMILES found for query: '{query}'")
+    return None
 
 
 # Check if your reactants are in the database
