@@ -175,10 +175,10 @@ For the full legal text, see the [LICENSE](LICENSE) file in this repository.
 
 ## 📝 Authors
 
-Mio Kobayashi, @mio-x4, mio.kobayashi@epfl.ch (SingleRxn page, report, presentation)
+- Mio Kobayashi, @mio-x4, mio.kobayashi@epfl.ch (SingleRxn page, report, presentation)
 
-Ambrine Labout, @AmbrineL, ambrine.labout@epfl.ch (DataBase, ComplexRxn page, report, presentation)
+- Ambrine Labout, @AmbrineL, ambrine.labout@epfl.ch (DataBase, ComplexRxn page, report, presentation)
 
-Elodie-Angélique Lendi, @Elo1402, elodie-angelique.lendi@epfl.ch (Home page, ComplexRxn page, report, presentation)
+- Elodie-Angélique Lendi, @Elo1402, elodie-angelique.lendi@epfl.ch (Home page, ComplexRxn page, report, presentation)
 
-Clarice Mihalache, @clarice-m04, clarice.mihalache@epfl.ch (Functions ODE_linearrxn, ODE_nonlinear, Complexrxn page, report, README)
+- Clarice Mihalache, @clarice-m04, clarice.mihalache@epfl.ch (Functions ODE_linearrxn, ODE_nonlinear, Complexrxn page, report, README)
