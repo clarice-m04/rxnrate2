@@ -19,6 +19,7 @@ rxnrate2: Modeling Chemical Reaction Kinetics with Python
 - :computer:[Installation](#computer-installation)
 - :hammer:[Development Installation](#hammer-development-installation)
 - :scroll:[License](#scroll-license)
+- :memo: [Authors](#-authors)
 
 ## :pen: Introduction
 
@@ -175,6 +176,9 @@ For the full legal text, see the [LICENSE](LICENSE) file in this repository.
 ## 📝 Authors
 
 Mio Kobayashi, @mio-x4, mio.kobayashi@epfl.ch (SingleRxn page, report, presentation)
+
 Ambrine Labout, @AmbrineL, ambrine.labout@epfl.ch (DataBase, ComplexRxn page, report, presentation)
+
 Elodie-Angélique Lendi, @Elo1402, elodie-angelique.lendi@epfl.ch (Home page, ComplexRxn page, report, presentation)
+
 Clarice Mihalache, @clarice-m04, clarice.mihalache@epfl.ch (Functions ODE_linearrxn, ODE_nonlinear, Complexrxn page, report, README)
