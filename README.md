@@ -119,27 +119,6 @@ streamlit run src/rxnrate2/Interface_rxnrate/Home.py
 
 ## :hammer: Installation
 
-Create and activate a new environment:
-
-```bash
-conda env create -f environment.yml
-conda activate rxnrate2
-```
-
-Install the package:
-
-```bash
-(rxnrate2) pip install -e .
-```
-
-To use the Streamlit GUI, ensure you have Streamlit installed (already included in the `environment.yml`, but in case you need to reinstall):
-
-```bash
-(rxnrate2) pip install streamlit
-```
-
-## :hammer: Development Installation
-
 Set up the repo locally:
 
 ```bash
@@ -159,6 +138,29 @@ git remote add origin git@github.com:clarice-m04/rxnrate2.git
 git push -u origin main
 ```
 
+Create and activate a new environment:
+
+```bash
+conda env create -f environment.yml
+conda activate rxnrate2
+```
+
+Install the package:
+
+```bash
+(rxnrate2) pip install -e .
+```
+
+To use the Streamlit GUI, ensure you have Streamlit installed and have already cloned the repository locally (already included in the `environment.yml`, but in case you need to reinstall):
+
+```bash
+(rxnrate2) pip install streamlit
+```
+The an previously explained, to run the interface, run in the terminal:
+
+```bash
+streamlit run src/rxnrate2/Interface_rxnrate/Home.py
+```
 ### Run tests and coverage
 
 ```bash
