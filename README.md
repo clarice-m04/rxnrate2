@@ -2,7 +2,8 @@
   <img src="assets/banner.png" alt="Project Logo" width="500"/>
 </div>
 
-![Coverage Status](assets/coverage-badge.svg)
+<img src="assets/coverage-badge.svg" alt="Coverage Status" style="display:none;">
+
 
 <h1 align="center">
 rxnrate2: Modeling Chemical Reaction Kinetics with Python
