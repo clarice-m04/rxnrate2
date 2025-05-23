@@ -1,4 +1,6 @@
-<img src="assets/banner.png" alt="Project Logo" width="300"/>
+<div align="center">
+  <img src="assets/banner.png" alt="Project Logo" width="500"/>
+</div>
 
 ![Coverage Status](assets/coverage-badge.svg)
 
