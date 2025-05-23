@@ -25,7 +25,7 @@ rxnrate2: Modeling Chemical Reaction Kinetics with Python
 ## :pen: Introduction
 
 This package was developed as part of the *Practical Programming in Chemistry* course at EPFL (Spring 2025).  
-**rxnrate2** simulates the time evolution of chemical species in reaction networks, both linear (first-order) and nonlinear (mass-action), using Python-based numerical solvers. Additionnaly, the molecules involved in the reactions are also shown.
+**rxnrate2** simulates the time evolution of chemical species in reaction networks, both linear (first-order) and nonlinear (mass-action), using Python-based numerical solvers. Additionally, the molecules involved in the reactions are also shown.
 
 It is designed to support:
 - graphical exploration of reaction kinetics,
@@ -59,7 +59,7 @@ It is designed to support:
   - Define reactions with species and rate constants.
   - Set initial concentrations and time span.
   - Visualize concentration dynamics instantly.
-  - Visualize the reaction with the help of diagramms showing the molecules.
+  - Visualize the reaction with the help of diagrams showing the molecules.
 - Ideal for demos, teaching, or quick testing of reaction models without coding.
 
 
