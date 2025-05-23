@@ -126,7 +126,6 @@ Set up the repo locally:
 ```bash
 git clone https://github.com/clarice-m04/rxnrate2.git
 cd rxnrate2
-(rxnrate2) pip install -e ".[test,doc]"
 ```
 
 To initialize git and push (only if starting from scratch):
