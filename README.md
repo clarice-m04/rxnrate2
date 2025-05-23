@@ -184,4 +184,4 @@ For the full legal text, see the [LICENSE](LICENSE) file in this repository.
 
 - Elodie-Angélique Lendi, @Elo1402, elodie-angelique.lendi@epfl.ch (Home page, ComplexRxn page, report, presentation)
 
-- Clarice Mihalache, @clarice-m04, clarice.mihalache@epfl.ch (Functions ODE_linearrxn, ODE_nonlinear, Complexrxn page, report, README)
+- Clarice Mihalache, @clarice-m04, clarice.mihalache@epfl.ch (Functions ODE_linearrxn, ODE_nonlinear, Complexrxn page, report, README, presentation)
