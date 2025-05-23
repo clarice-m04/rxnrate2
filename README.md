@@ -158,7 +158,7 @@ To use the Streamlit GUI, ensure you have Streamlit installed and have already c
 ```bash
 (rxnrate2) pip install streamlit
 ```
-The an previously explained, to run the interface, run in the terminal:
+Then, as previously explained, to run the interface, run in the terminal:
 
 ```bash
 streamlit run src/rxnrate2/Interface_rxnrate/Home.py
