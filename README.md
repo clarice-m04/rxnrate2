@@ -128,17 +128,6 @@ git clone https://github.com/clarice-m04/rxnrate2.git
 cd rxnrate2
 ```
 
-To initialize git and push (only if starting from scratch):
-
-```bash
-git init
-git add .
-git commit -m "Initial commit"
-git branch -M main
-git remote add origin git@github.com:clarice-m04/rxnrate2.git
-git push -u origin main
-```
-
 Create and activate a new environment:
 
 ```bash
